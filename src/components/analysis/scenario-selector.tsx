@@ -1,8 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { Activity, Brain, CheckCircle2, HeartPulse, ShieldCheck } from "lucide-react";
+import { useRouter } from "next/navigation";
+import type { LucideIcon } from "lucide-react";
+import {
+  Activity,
+  Brain,
+  CheckCircle2,
+  HeartPulse,
+  ShieldCheck,
+} from "lucide-react";
 
+import {
+  predictionSamples,
+  type PredictionSampleId,
+} from "@/data/prediction-samples";
+import { createPrediction } from "@/services/prediction-service";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,7 +26,18 @@ import {
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-const scenarios = [
+type Scenario = {
+  id: PredictionSampleId;
+  title: string;
+  description: string;
+  badge: string;
+  probability: string;
+  icon: LucideIcon;
+  iconClassName: string;
+  borderClassName: string;
+};
+
+const scenarios: Scenario[] = [
   {
     id: "benign",
     title: "Benign sample",
@@ -47,14 +71,40 @@ const scenarios = [
     iconClassName: "bg-risk-high-soft text-risk-high",
     borderClassName: "border-risk-high/30",
   },
-] as const;
-
-type ScenarioId = (typeof scenarios)[number]["id"];
+];
 
 export function ScenarioSelector() {
-  const [selectedScenario, setSelectedScenario] = useState<ScenarioId>("benign");
+  const router = useRouter();
 
-  const selected = scenarios.find((scenario) => scenario.id === selectedScenario)!;
+  const [selectedScenario, setSelectedScenario] =
+    useState<PredictionSampleId>("benign");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const selected =
+    scenarios.find((scenario) => scenario.id === selectedScenario) ??
+    scenarios[0];
+
+  async function handleRunAnalysis() {
+    try {
+      setIsSubmitting(true);
+      setErrorMessage(null);
+
+      const response = await createPrediction({
+        features: predictionSamples[selectedScenario],
+      });
+
+      router.push(`/analysis/${response.id}`);
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Unable to run the selected analysis."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
   return (
     <div className="space-y-8">
@@ -80,7 +130,12 @@ export function ScenarioSelector() {
               >
                 <CardHeader className="px-5 pt-5">
                   <div className="flex items-start justify-between gap-4">
-                    <div className={cn("flex size-12 items-center justify-center rounded-2xl", scenario.iconClassName)}>
+                    <div
+                      className={cn(
+                        "flex size-12 items-center justify-center rounded-2xl",
+                        scenario.iconClassName
+                      )}
+                    >
                       <Icon className="size-5" />
                     </div>
 
@@ -130,15 +185,26 @@ export function ScenarioSelector() {
             </h3>
 
             <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
-              This first version prepares the guided analysis flow. The backend
-              integration will call the Java API and redirect to the result
-              detail page.
+              The selected sample will be sent to the Spring Boot API, which
+              calls the ML service, persists the prediction and returns the
+              analysis identifier.
             </p>
+
+            {errorMessage ? (
+              <p className="mt-4 rounded-2xl border border-risk-high-soft bg-risk-high-soft px-4 py-3 text-sm font-medium text-risk-high">
+                {errorMessage}
+              </p>
+            ) : null}
           </div>
 
-          <Button className="h-14 rounded-2xl bg-primary-rose px-8 text-base font-semibold text-white shadow-lg shadow-primary-rose/20 hover:bg-primary-rose-dark">
+          <Button
+            type="button"
+            disabled={isSubmitting}
+            onClick={handleRunAnalysis}
+            className="h-14 rounded-2xl bg-primary-rose px-8 text-base font-semibold text-white shadow-lg shadow-primary-rose/20 hover:bg-primary-rose-dark disabled:cursor-not-allowed disabled:opacity-70"
+          >
             <Brain className="mr-2 size-5" />
-            Run analysis
+            {isSubmitting ? "Running analysis..." : "Run analysis"}
           </Button>
         </CardContent>
       </Card>
