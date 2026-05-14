@@ -211,14 +211,6 @@ export function PredictionDetail({ id }: { id: string }) {
     return toPercent(prediction.probability_malignant);
   }, [prediction]);
 
-  const benignPercent = useMemo(() => {
-    if (!prediction) {
-      return 0;
-    }
-
-    return toPercent(prediction.probability_benign);
-  }, [prediction]);
-
   const thresholdPercent = useMemo(() => {
     if (!prediction) {
       return 0;
