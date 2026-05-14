@@ -1,4 +1,5 @@
 import type {
+  PredictionListItem,
   PredictionRequest,
   PredictionResponse,
 } from "@/types/prediction";
@@ -36,4 +37,8 @@ export function createPrediction(
 
 export function getPredictionById(id: string): Promise<PredictionResponse> {
   return requestJson<PredictionResponse>(`/api/predictions/${id}`);
+}
+
+export function getPredictionHistory(): Promise<PredictionListItem[]> {
+  return requestJson<PredictionListItem[]>("/api/predictions");
 }
