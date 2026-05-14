@@ -5,10 +5,14 @@ import { useRouter } from "next/navigation";
 import type { LucideIcon } from "lucide-react";
 import {
   Activity,
+  ArrowLeft,
+  ArrowRight,
   Brain,
   Calculator,
   CheckCircle2,
+  Eye,
   HeartPulse,
+  ListChecks,
   RotateCcw,
   ShieldCheck,
   SlidersHorizontal,
@@ -53,6 +57,40 @@ type FeatureGroup = {
   features: string[];
 };
 
+type Step = {
+  id: number;
+  title: string;
+  description: string;
+  icon: LucideIcon;
+};
+
+const steps: Step[] = [
+  {
+    id: 0,
+    title: "Sample",
+    description: "Choose a base scenario",
+    icon: HeartPulse,
+  },
+  {
+    id: 1,
+    title: "Review",
+    description: "Check key values",
+    icon: Eye,
+  },
+  {
+    id: 2,
+    title: "Features",
+    description: "Edit advanced inputs",
+    icon: SlidersHorizontal,
+  },
+  {
+    id: 3,
+    title: "Run",
+    description: "Create prediction",
+    icon: Brain,
+  },
+];
+
 const scenarios: Scenario[] = [
   {
     id: "benign",
@@ -92,8 +130,7 @@ const scenarios: Scenario[] = [
 const featureGroups: FeatureGroup[] = [
   {
     title: "Mean features",
-    description:
-      "Average values extracted from the cell nuclei measurements.",
+    description: "Average values extracted from the cell nuclei measurements.",
     features: [
       "radius_mean",
       "texture_mean",
@@ -109,8 +146,7 @@ const featureGroups: FeatureGroup[] = [
   },
   {
     title: "Standard error features",
-    description:
-      "Variation measurements related to each nucleus characteristic.",
+    description: "Variation measurements related to each nucleus characteristic.",
     features: [
       "radius_se",
       "texture_se",
@@ -126,8 +162,7 @@ const featureGroups: FeatureGroup[] = [
   },
   {
     title: "Worst features",
-    description:
-      "Largest or most severe values observed for each characteristic.",
+    description: "Largest or most severe values observed for each characteristic.",
     features: [
       "radius_worst",
       "texture_worst",
@@ -141,6 +176,19 @@ const featureGroups: FeatureGroup[] = [
       "fractal_dimension_worst",
     ],
   },
+];
+
+const keyReviewFeatures = [
+  "radius_mean",
+  "texture_mean",
+  "perimeter_mean",
+  "area_mean",
+  "concavity_mean",
+  "concave_points_mean",
+  "radius_worst",
+  "texture_worst",
+  "perimeter_worst",
+  "area_worst",
 ];
 
 function toEditableValues(features: PredictionFeatures) {
@@ -161,9 +209,14 @@ function getInvalidFeatures(values: Record<string, string>) {
     .map(([key]) => key);
 }
 
+function formatFeatureLabel(feature: string) {
+  return feature.replaceAll("_", " ");
+}
+
 export function ScenarioSelector() {
   const router = useRouter();
 
+  const [currentStep, setCurrentStep] = useState(0);
   const [selectedScenario, setSelectedScenario] =
     useState<PredictionSampleId>("benign");
 
@@ -191,6 +244,9 @@ export function ScenarioSelector() {
     [featureValues]
   );
 
+  const isLastStep = currentStep === steps.length - 1;
+  const canGoBack = currentStep > 0;
+
   function handleSelectScenario(scenarioId: PredictionSampleId) {
     setSelectedScenario(scenarioId);
     setFeatureValues(toEditableValues(predictionSamples[scenarioId]));
@@ -209,6 +265,26 @@ export function ScenarioSelector() {
     }));
   }
 
+  function handleGoBack() {
+    setErrorMessage(null);
+    setCurrentStep((step) => Math.max(step - 1, 0));
+  }
+
+  function handleGoNext() {
+    setErrorMessage(null);
+
+    if (currentStep === 2 && invalidFeatures.length > 0) {
+      setErrorMessage(
+        `Please review the following numeric fields: ${invalidFeatures
+          .slice(0, 5)
+          .join(", ")}${invalidFeatures.length > 5 ? "..." : ""}`
+      );
+      return;
+    }
+
+    setCurrentStep((step) => Math.min(step + 1, steps.length - 1));
+  }
+
   async function handleRunAnalysis() {
     try {
       setIsSubmitting(true);
@@ -222,6 +298,7 @@ export function ScenarioSelector() {
             .slice(0, 5)
             .join(", ")}${invalid.length > 5 ? "..." : ""}`
         );
+        setCurrentStep(2);
         return;
       }
 
@@ -243,201 +320,358 @@ export function ScenarioSelector() {
 
   return (
     <div className="space-y-8">
-      <div className="grid gap-5 lg:grid-cols-3">
-        {scenarios.map((scenario) => {
-          const Icon = scenario.icon;
-          const isSelected = selectedScenario === scenario.id;
+      <Card className="rounded-[2rem] border-border bg-card/95 p-2 shadow-sm">
+        <CardContent className="p-5">
+          <div className="grid gap-3 md:grid-cols-4">
+            {steps.map((step) => {
+              const Icon = step.icon;
+              const isActive = currentStep === step.id;
+              const isCompleted = currentStep > step.id;
 
-          return (
-            <button
-              key={scenario.id}
-              type="button"
-              onClick={() => handleSelectScenario(scenario.id)}
-              className="text-left"
-            >
-              <Card
-                className={cn(
-                  "h-full rounded-3xl border bg-card/95 p-2 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl",
-                  isSelected
-                    ? `${scenario.borderClassName} ring-2 ring-primary-rose/20`
-                    : "border-border"
-                )}
-              >
-                <CardHeader className="px-5 pt-5">
-                  <div className="flex items-start justify-between gap-4">
+              return (
+                <button
+                  key={step.id}
+                  type="button"
+                  onClick={() => setCurrentStep(step.id)}
+                  className={cn(
+                    "rounded-3xl border p-4 text-left transition hover:bg-muted/70",
+                    isActive
+                      ? "border-primary-rose bg-primary-rose-soft/50"
+                      : "border-border bg-white/70"
+                  )}
+                >
+                  <div className="flex items-center gap-3">
                     <div
                       className={cn(
-                        "flex size-12 items-center justify-center rounded-2xl",
-                        scenario.iconClassName
+                        "flex size-10 items-center justify-center rounded-2xl",
+                        isActive || isCompleted
+                          ? "bg-primary-rose text-white"
+                          : "bg-muted text-muted-foreground"
                       )}
                     >
-                      <Icon className="size-5" />
+                      {isCompleted ? (
+                        <CheckCircle2 className="size-5" />
+                      ) : (
+                        <Icon className="size-5" />
+                      )}
                     </div>
 
-                    {isSelected ? (
-                      <CheckCircle2 className="size-5 text-primary-rose" />
-                    ) : null}
+                    <div>
+                      <p className="text-sm font-semibold text-foreground">
+                        {step.title}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {step.description}
+                      </p>
+                    </div>
                   </div>
+                </button>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
 
-                  <CardTitle className="mt-4 text-xl font-semibold">
-                    {scenario.title}
-                  </CardTitle>
-                </CardHeader>
+      {currentStep === 0 ? (
+        <div className="grid gap-5 lg:grid-cols-3">
+          {scenarios.map((scenario) => {
+            const Icon = scenario.icon;
+            const isSelected = selectedScenario === scenario.id;
 
-                <CardContent className="px-5 pb-5">
-                  <Badge className="rounded-xl bg-muted px-3 py-1 text-muted-foreground hover:bg-muted">
-                    {scenario.badge}
-                  </Badge>
+            return (
+              <button
+                key={scenario.id}
+                type="button"
+                onClick={() => handleSelectScenario(scenario.id)}
+                className="text-left"
+              >
+                <Card
+                  className={cn(
+                    "h-full rounded-3xl border bg-card/95 p-2 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl",
+                    isSelected
+                      ? `${scenario.borderClassName} ring-2 ring-primary-rose/20`
+                      : "border-border"
+                  )}
+                >
+                  <CardHeader className="px-5 pt-5">
+                    <div className="flex items-start justify-between gap-4">
+                      <div
+                        className={cn(
+                          "flex size-12 items-center justify-center rounded-2xl",
+                          scenario.iconClassName
+                        )}
+                      >
+                        <Icon className="size-5" />
+                      </div>
 
-                  <p className="mt-4 text-sm leading-6 text-muted-foreground">
-                    {scenario.description}
+                      {isSelected ? (
+                        <CheckCircle2 className="size-5 text-primary-rose" />
+                      ) : null}
+                    </div>
+
+                    <CardTitle className="mt-4 text-xl font-semibold">
+                      {scenario.title}
+                    </CardTitle>
+                  </CardHeader>
+
+                  <CardContent className="px-5 pb-5">
+                    <Badge className="rounded-xl bg-muted px-3 py-1 text-muted-foreground hover:bg-muted">
+                      {scenario.badge}
+                    </Badge>
+
+                    <p className="mt-4 text-sm leading-6 text-muted-foreground">
+                      {scenario.description}
+                    </p>
+
+                    <div className="mt-6 rounded-2xl bg-muted p-4">
+                      <p className="text-xs font-medium text-muted-foreground">
+                        Preview malignant probability
+                      </p>
+                      <p className="mt-1 text-2xl font-semibold text-foreground">
+                        {scenario.probability}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </button>
+            );
+          })}
+        </div>
+      ) : null}
+
+      {currentStep === 1 ? (
+        <Card className="rounded-[2rem] border-border bg-card/95 p-2 shadow-sm">
+          <CardHeader className="px-6 pt-6">
+            <CardTitle className="flex items-center gap-3 text-2xl">
+              <ListChecks className="size-6 text-primary-rose" />
+              Review selected sample
+            </CardTitle>
+
+            <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
+              This step summarizes the selected sample and the most relevant
+              values before opening the complete advanced editor.
+            </p>
+          </CardHeader>
+
+          <CardContent className="px-6 pb-6">
+            <div className="mb-6 rounded-3xl bg-muted p-5">
+              <Badge className="rounded-xl bg-primary-rose-soft px-3 py-1 text-primary-rose hover:bg-primary-rose-soft">
+                {selected.badge}
+              </Badge>
+
+              <h3 className="mt-4 text-2xl font-semibold text-foreground">
+                {selected.title}
+              </h3>
+
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                {selected.description}
+              </p>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+              {keyReviewFeatures.map((feature) => (
+                <div key={feature} className="rounded-2xl border border-border bg-white p-4">
+                  <p className="text-xs font-medium capitalize text-muted-foreground">
+                    {formatFeatureLabel(feature)}
                   </p>
 
-                  <div className="mt-6 rounded-2xl bg-muted p-4">
-                    <p className="text-xs font-medium text-muted-foreground">
-                      Preview malignant probability
+                  <p className="mt-2 text-lg font-semibold text-foreground">
+                    {featureValues[feature]}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      ) : null}
+
+      {currentStep === 2 ? (
+        <Card className="rounded-[2rem] border-border bg-card/95 p-2 shadow-sm">
+          <CardHeader className="px-6 pt-6">
+            <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-3 text-2xl">
+                  <SlidersHorizontal className="size-6 text-primary-rose" />
+                  Advanced feature editor
+                </CardTitle>
+
+                <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
+                  Edit the 30 numeric features used by the model. Values are
+                  grouped using the WDBC structure: mean, standard error and
+                  worst measurements.
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <div className="rounded-2xl bg-muted px-4 py-3 text-sm font-medium text-muted-foreground">
+                  {filledFeatureCount}/30 valid fields
+                </div>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleResetScenarioValues}
+                  className="h-11 rounded-2xl border-border bg-white px-4"
+                >
+                  <RotateCcw className="mr-2 size-4" />
+                  Reset sample
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+
+          <CardContent className="px-6 pb-6">
+            <Accordion className="rounded-3xl border border-border bg-white/70 px-4">
+              {featureGroups.map((group) => (
+                <AccordionItem key={group.title} value={group.title}>
+                  <AccordionTrigger>{group.title}</AccordionTrigger>
+
+                  <AccordionContent>
+                    <p className="mb-5 text-sm leading-6 text-muted-foreground">
+                      {group.description}
                     </p>
-                    <p className="mt-1 text-2xl font-semibold text-foreground">
-                      {scenario.probability}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </button>
-          );
-        })}
-      </div>
 
-      <Card className="rounded-3xl border-border bg-card/95 p-2 shadow-[0_18px_60px_rgba(15,23,42,0.08)]">
-        <CardContent className="flex flex-col gap-5 p-5 md:flex-row md:items-center md:justify-between">
-          <div>
-            <Badge className="rounded-xl bg-primary-rose-soft px-3 py-1 text-primary-rose hover:bg-primary-rose-soft">
-              Selected scenario
-            </Badge>
+                    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                      {group.features.map((feature) => {
+                        const hasError = invalidFeatures.includes(feature);
 
-            <h3 className="mt-3 text-2xl font-semibold text-foreground">
-              {selected.title}
-            </h3>
+                        return (
+                          <label key={feature} className="block">
+                            <span className="text-xs font-medium text-muted-foreground">
+                              {feature}
+                            </span>
 
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
-              The selected sample pre-fills all 30 model features. You can keep
-              the guided values or adjust them manually in the advanced editor
-              below before running the analysis.
-            </p>
+                            <input
+                              type="number"
+                              step="any"
+                              value={featureValues[feature] ?? ""}
+                              onChange={(event) =>
+                                handleFeatureChange(feature, event.target.value)
+                              }
+                              className={cn(
+                                "mt-2 h-11 w-full rounded-2xl border bg-white px-4 text-sm text-foreground outline-none transition placeholder:text-muted-foreground/60 focus:border-primary-rose focus:ring-4 focus:ring-primary-rose/10",
+                                hasError
+                                  ? "border-risk-high bg-risk-high-soft/30"
+                                  : "border-border"
+                              )}
+                            />
 
-            {errorMessage ? (
-              <p className="mt-4 rounded-2xl border border-risk-high-soft bg-risk-high-soft px-4 py-3 text-sm font-medium text-risk-high">
-                {errorMessage}
+                            {hasError ? (
+                              <span className="mt-1 block text-xs font-medium text-risk-high">
+                                Enter a valid number.
+                              </span>
+                            ) : null}
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+
+            <div className="mt-6 flex items-start gap-3 rounded-3xl border border-secondary-teal-soft bg-secondary-teal-soft/35 p-5 text-sm leading-6 text-muted-foreground">
+              <Calculator className="mt-0.5 size-5 shrink-0 text-secondary-teal-dark" />
+              <p>
+                These values are sent as a structured feature payload to the
+                Spring Boot API. The backend calls the ML service, persists the
+                result and returns the analysis identifier.
               </p>
-            ) : null}
-          </div>
+            </div>
+          </CardContent>
+        </Card>
+      ) : null}
 
+      {currentStep === 3 ? (
+        <Card className="rounded-[2rem] border-border bg-card/95 p-2 shadow-[0_18px_60px_rgba(15,23,42,0.08)]">
+          <CardContent className="p-6">
+            <div className="grid gap-6 lg:grid-cols-[1fr_0.8fr] lg:items-center">
+              <div>
+                <Badge className="rounded-xl bg-primary-rose-soft px-3 py-1 text-primary-rose hover:bg-primary-rose-soft">
+                  Ready to run
+                </Badge>
+
+                <h3 className="mt-4 text-3xl font-semibold text-foreground">
+                  Create prediction from {selected.title}
+                </h3>
+
+                <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
+                  The analysis will be sent to the Spring Boot API, processed by
+                  the ML service and persisted in the database. After creation,
+                  you will be redirected to the result detail page.
+                </p>
+
+                {errorMessage ? (
+                  <p className="mt-4 rounded-2xl border border-risk-high-soft bg-risk-high-soft px-4 py-3 text-sm font-medium text-risk-high">
+                    {errorMessage}
+                  </p>
+                ) : null}
+              </div>
+
+              <div className="rounded-3xl bg-muted p-5">
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-sm font-medium text-muted-foreground">
+                    Valid features
+                  </span>
+                  <span className="text-2xl font-semibold text-foreground">
+                    {filledFeatureCount}/30
+                  </span>
+                </div>
+
+                <div className="mt-4 flex items-center justify-between gap-4">
+                  <span className="text-sm font-medium text-muted-foreground">
+                    Preview probability
+                  </span>
+                  <span className="text-2xl font-semibold text-primary-rose">
+                    {selected.probability}
+                  </span>
+                </div>
+
+                <Button
+                  type="button"
+                  disabled={isSubmitting}
+                  onClick={handleRunAnalysis}
+                  className="mt-6 h-14 w-full rounded-2xl bg-primary-rose px-8 text-base font-semibold text-white shadow-lg shadow-primary-rose/20 hover:bg-primary-rose-dark disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  <Brain className="mr-2 size-5" />
+                  {isSubmitting ? "Running analysis..." : "Run analysis"}
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ) : null}
+
+      {errorMessage && currentStep !== 3 ? (
+        <p className="rounded-2xl border border-risk-high-soft bg-risk-high-soft px-4 py-3 text-sm font-medium text-risk-high">
+          {errorMessage}
+        </p>
+      ) : null}
+
+      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <Button
+          type="button"
+          variant="outline"
+          disabled={!canGoBack || isSubmitting}
+          onClick={handleGoBack}
+          className="h-12 rounded-2xl border-border bg-white px-6 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <ArrowLeft className="mr-2 size-4" />
+          Back
+        </Button>
+
+        {!isLastStep ? (
           <Button
             type="button"
             disabled={isSubmitting}
-            onClick={handleRunAnalysis}
-            className="h-14 rounded-2xl bg-primary-rose px-8 text-base font-semibold text-white shadow-lg shadow-primary-rose/20 hover:bg-primary-rose-dark disabled:cursor-not-allowed disabled:opacity-70"
+            onClick={handleGoNext}
+            className="h-12 rounded-2xl bg-primary-rose px-6 text-white hover:bg-primary-rose-dark"
           >
-            <Brain className="mr-2 size-5" />
-            {isSubmitting ? "Running analysis..." : "Run analysis"}
+            Continue
+            <ArrowRight className="ml-2 size-4" />
           </Button>
-        </CardContent>
-      </Card>
-
-      <Card className="rounded-[2rem] border-border bg-card/95 p-2 shadow-sm">
-        <CardHeader className="px-6 pt-6">
-          <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
-            <div>
-              <CardTitle className="flex items-center gap-3 text-2xl">
-                <SlidersHorizontal className="size-6 text-primary-rose" />
-                Advanced feature editor
-              </CardTitle>
-
-              <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
-                Edit the 30 numeric features used by the model. Values are
-                grouped using the WDBC structure: mean, standard error and worst
-                measurements.
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <div className="rounded-2xl bg-muted px-4 py-3 text-sm font-medium text-muted-foreground">
-                {filledFeatureCount}/30 valid fields
-              </div>
-
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleResetScenarioValues}
-                className="h-11 rounded-2xl border-border bg-white px-4"
-              >
-                <RotateCcw className="mr-2 size-4" />
-                Reset sample
-              </Button>
-            </div>
-          </div>
-        </CardHeader>
-
-        <CardContent className="px-6 pb-6">
-          <Accordion className="rounded-3xl border border-border bg-white/70 px-4">
-            {featureGroups.map((group) => (
-              <AccordionItem key={group.title} value={group.title}>
-                <AccordionTrigger>{group.title}</AccordionTrigger>
-
-                <AccordionContent>
-                  <p className="mb-5 text-sm leading-6 text-muted-foreground">
-                    {group.description}
-                  </p>
-
-                  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                    {group.features.map((feature) => {
-                      const hasError = invalidFeatures.includes(feature);
-
-                      return (
-                        <label key={feature} className="block">
-                          <span className="text-xs font-medium text-muted-foreground">
-                            {feature}
-                          </span>
-
-                          <input
-                            type="number"
-                            step="any"
-                            value={featureValues[feature] ?? ""}
-                            onChange={(event) =>
-                              handleFeatureChange(feature, event.target.value)
-                            }
-                            className={cn(
-                              "mt-2 h-11 w-full rounded-2xl border bg-white px-4 text-sm text-foreground outline-none transition placeholder:text-muted-foreground/60 focus:border-primary-rose focus:ring-4 focus:ring-primary-rose/10",
-                              hasError
-                                ? "border-risk-high bg-risk-high-soft/30"
-                                : "border-border"
-                            )}
-                          />
-
-                          {hasError ? (
-                            <span className="mt-1 block text-xs font-medium text-risk-high">
-                              Enter a valid number.
-                            </span>
-                          ) : null}
-                        </label>
-                      );
-                    })}
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-
-          <div className="mt-6 flex items-start gap-3 rounded-3xl border border-secondary-teal-soft bg-secondary-teal-soft/35 p-5 text-sm leading-6 text-muted-foreground">
-            <Calculator className="mt-0.5 size-5 shrink-0 text-secondary-teal-dark" />
-            <p>
-              These values are sent as a structured feature payload to the
-              Spring Boot API. The backend calls the ML service, persists the
-              result and returns the analysis identifier.
-            </p>
-          </div>
-        </CardContent>
-      </Card>
+        ) : null}
+      </div>
     </div>
   );
 }
