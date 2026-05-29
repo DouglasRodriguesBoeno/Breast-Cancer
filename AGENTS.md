@@ -1,24 +1,14 @@
-<!-- BEGIN:nextjs-agent-rules -->
-# This is NOT the Next.js you know
+# AGENTS.md — BreastCare AI Frontend
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
-<!-- END:nextjs-agent-rules -->
+## Project
 
-# BreastCare AI Frontend Agent Instructions
+BreastCare AI is an educational AI healthtech web application.
 
-## Project role
+The V2 direction is:
 
-This repository is the BreastCare AI frontend.
+BreastCare AI V2 — Report Intelligence & Explainable AI
 
-It is responsible for:
-- Next.js application routes;
-- Next.js API Routes used as proxy to the Spring Boot backend;
-- educational user experience;
-- prediction creation flow;
-- prediction history;
-- prediction detail;
-- model overview;
-- future V2 dashboard, explainability UI, system status and report export flows.
+The main V2 flow is the Laudo Intelligence Layer. The WDBC Prediction Engine remains available, but it is complementary and advanced.
 
 ## Stack
 
@@ -26,91 +16,95 @@ It is responsible for:
 - React
 - TypeScript
 - Tailwind CSS
-- shadcn/base-ui
-- Recharts
-- React Hook Form
-- Zod
-- TanStack Query
+- shadcn/ui or equivalent local UI primitives
 
-## Production context
+## Required design docs
 
-BreastCare AI V1 is already in production.
+Before implementing any V2 UI task, read:
 
-Architecture:
+- `docs/design/01-design-system-v2.md`
+- `docs/design/02-user-flow-v2.md`
+- `docs/design/03-screen-specs-v2.md`
+- `docs/design/04-frontend-handoff-v2.md`
+- `docs/design/05-copy-safety-guidelines.md`
+- `docs/design/spec-router.json`
+- `docs/design/AGENT_DESIGN_INSTRUCTIONS.md`
 
-```txt
-Frontend Next.js on Vercel
-→ Next.js API Routes
-→ Spring Boot API on Railway
-→ FastAPI ML Service on Railway
-→ Neon PostgreSQL
-```
+## Core product rule
 
-Do not break the existing production flow.
+Do not send the user directly to the 30 WDBC feature fields as the first experience.
 
-## Medical safety rules
+The `/new-analysis` route must start with mode selection:
 
-This project is educational only.
+1. Analyze medical report
+2. Educational demo
+3. Import structured data
+4. Advanced manual input
 
-Allowed language:
-- educational prediction;
-- model output;
-- compatible with benign/malignant pattern;
-- malignant probability;
-- risk band;
-- not a medical diagnosis.
+## Safety rules
 
-Forbidden language:
-- diagnosis;
-- patient has cancer;
-- confirmed cancer;
-- confirmed malignant tumor;
-- definitive clinical result;
-- treatment recommendation.
+Never use diagnostic language.
 
-Every user-facing result must preserve educational and non-diagnostic language.
+Do not write:
 
-## Frontend rules
+- You have cancer
+- Diagnosis confirmed
+- Clinical result
+- Treatment recommended
+- AI-defined urgency
 
-- Do not call the Spring Boot API directly from browser client components when a Next.js API Route exists or should exist.
-- Keep existing V1 routes working:
-  - `/`
-  - `/analysis/new`
-  - `/analysis/history`
-  - `/analysis/[id]`
-  - `/model`
-- Preserve responsive/mobile behavior.
-- Keep UI aligned with the Clinical Calm AI visual identity.
-- Add loading, empty and error states for new server interactions.
-- Prefer reusable components over page-specific duplication.
-- Do not commit secrets or production credentials.
+Prefer:
 
-## Useful validation commands
+- Educational only
+- Not a medical diagnosis
+- The report mentions...
+- The system identified...
+- Compatible with...
+- This explanation does not replace a healthcare professional
 
-```bash
-npm run lint
-npm run build
-```
+## Visual rules
 
-## Definition of done
+Use the Clinical Calm AI design system:
 
-A frontend task is done only when:
-- the app builds;
-- existing V1 screens still work;
-- new UI has loading and error states;
-- educational safety language is preserved;
-- API calls go through the intended proxy layer;
-- no secrets are committed;
-- README or specs are updated when behavior changes.
+- Background: `#F8FAFC`
+- Surface: `#FFFFFF`
+- Border: `#E2E8F0`
+- Text primary: `#0F172A`
+- Text secondary: `#475569`
+- Primary rose: `#E11D48`
+- Rose soft: `#FFE4E6`
+- Teal: `#0F766E`
+- Blue: `#2563EB`
 
-## V2 priorities
+The UI should be clean, calm, professional, B2B/SaaS, and educational.
 
-Work in small PRs following the specs under `/specs` when available.
+## Before coding
 
-Recommended order:
-1. System status UI.
-2. Paginated history UI.
-3. Explainability cards in prediction detail.
-4. Dashboard analytics.
-5. Educational PDF report button.
-6. Educational assistant/RAG UI only after safety specs exist.
+For every task:
+
+1. Identify the task key in `docs/design/spec-router.json`.
+2. List the specs that apply.
+3. List files likely to be changed.
+4. Explain a short implementation plan.
+5. Then implement.
+
+## After coding
+
+Always return:
+
+- What changed
+- How to test
+- Checklist of acceptance criteria
+- Any risks or manual review points
+
+## First recommended task
+
+Task key:
+
+`new-analysis-mode-selection`
+
+Goal:
+
+Refactor `/new-analysis` into the V2 mode selection screen.
+
+Do not remove the existing WDBC flow. Preserve or move it to `/new-analysis/advanced`.
