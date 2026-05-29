@@ -1,0 +1,174 @@
+{
+  "new-analysis-mode-selection": {
+    "description": "Refatorar /new-analysis para seleção de modo da V2",
+    "specs": [
+      "01-design-system-v2.md",
+      "02-user-flow-v2.md",
+      "03-screen-specs-v2.md",
+      "04-frontend-handoff-v2.md",
+      "05-copy-safety-guidelines.md"
+    ],
+    "screens": [
+      "02 / New Analysis - Mode Selection"
+    ],
+    "routes": [
+      "/new-analysis"
+    ],
+    "components": [
+      "AnalysisModeSelection",
+      "ModeSelectionCard",
+      "SafetyNotice",
+      "AppHeader",
+      "PageShell"
+    ]
+  },
+  "analyze-report-input": {
+    "description": "Criar tela de input de laudo da Laudo Intelligence Layer",
+    "specs": [
+      "01-design-system-v2.md",
+      "02-user-flow-v2.md",
+      "03-screen-specs-v2.md",
+      "04-frontend-handoff-v2.md",
+      "05-copy-safety-guidelines.md"
+    ],
+    "screens": [
+      "03 / Analyze Report - Input"
+    ],
+    "routes": [
+      "/new-analysis/report"
+    ],
+    "components": [
+      "ReportInputForm",
+      "ReportTextarea",
+      "LanguageSelect",
+      "SafetyNotice",
+      "BentoCard"
+    ]
+  },
+  "report-analysis-loading": {
+    "description": "Criar estado de processamento da análise de laudo",
+    "specs": [
+      "01-design-system-v2.md",
+      "02-user-flow-v2.md",
+      "03-screen-specs-v2.md",
+      "05-copy-safety-guidelines.md"
+    ],
+    "screens": [
+      "04 / Report Analysis - Loading"
+    ],
+    "routes": [
+      "/new-analysis/report"
+    ],
+    "components": [
+      "ReportProcessingState",
+      "StepProgress",
+      "LoadingState"
+    ]
+  },
+  "report-intelligence-result": {
+    "description": "Criar tela de resultado da Laudo Intelligence Layer",
+    "specs": [
+      "01-design-system-v2.md",
+      "02-user-flow-v2.md",
+      "03-screen-specs-v2.md",
+      "04-frontend-handoff-v2.md",
+      "05-copy-safety-guidelines.md"
+    ],
+    "screens": [
+      "05 / Report Intelligence - Result"
+    ],
+    "routes": [
+      "/reports/[id]"
+    ],
+    "components": [
+      "ReportResultHeader",
+      "SimpleExplanationCard",
+      "StructuredFindingsCard",
+      "ImportantTermsCard",
+      "WdbcCompatibilityCard",
+      "SafetyNotesCard"
+    ]
+  },
+  "wdbc-compatibility-bridge": {
+    "description": "Criar ponte visual e funcional entre Laudo Intelligence Layer e WDBC Prediction Engine",
+    "specs": [
+      "01-design-system-v2.md",
+      "02-user-flow-v2.md",
+      "03-screen-specs-v2.md",
+      "05-copy-safety-guidelines.md"
+    ],
+    "screens": [
+      "06 / WDBC Compatibility Bridge"
+    ],
+    "routes": [
+      "/reports/[id]"
+    ],
+    "components": [
+      "CompatibilityBridge",
+      "WdbcCompatibilityCard",
+      "SafetyNotice"
+    ]
+  },
+  "educational-demo": {
+    "description": "Criar tela de demonstração educacional com presets WDBC",
+    "specs": [
+      "01-design-system-v2.md",
+      "02-user-flow-v2.md",
+      "03-screen-specs-v2.md",
+      "05-copy-safety-guidelines.md"
+    ],
+    "screens": [
+      "07 / Educational Demo"
+    ],
+    "routes": [
+      "/new-analysis/demo"
+    ],
+    "components": [
+      "EducationalDemoGrid",
+      "DemoPresetCard",
+      "SafetyNotice"
+    ]
+  },
+  "import-structured-data": {
+    "description": "Criar tela para upload/validação de CSV ou JSON compatível com WDBC",
+    "specs": [
+      "01-design-system-v2.md",
+      "02-user-flow-v2.md",
+      "03-screen-specs-v2.md",
+      "05-copy-safety-guidelines.md"
+    ],
+    "screens": [
+      "08 / Import Structured Data"
+    ],
+    "routes": [
+      "/new-analysis/import"
+    ],
+    "components": [
+      "StructuredDataImport",
+      "UploadArea",
+      "FeatureCompletenessScore",
+      "MissingFeaturesList"
+    ]
+  },
+  "advanced-manual-input": {
+    "description": "Mover/preservar formulário avançado das 30 features WDBC",
+    "specs": [
+      "01-design-system-v2.md",
+      "02-user-flow-v2.md",
+      "03-screen-specs-v2.md",
+      "05-copy-safety-guidelines.md"
+    ],
+    "screens": [
+      "09 / Advanced Manual Input"
+    ],
+    "routes": [
+      "/new-analysis/advanced"
+    ],
+    "components": [
+      "AdvancedFeatureEditor",
+      "FeatureAccordion",
+      "FeatureCompletenessScore",
+      "SafetyNotice"
+    ]
+  }
+}
