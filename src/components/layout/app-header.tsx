@@ -1,17 +1,17 @@
 import Link from "next/link";
-import { Clock3, Grid2X2, HeartPulse } from "lucide-react";
+import { Clock3, FilePlus2, Grid2X2, HeartPulse } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 
 const navItems = [
   {
-    href: "/analysis/new",
+    href: "/new-analysis",
     label: "New",
     desktopLabel: "New analysis",
-    icon: HeartPulse,
+    icon: FilePlus2,
   },
   {
-    href: "/analysis/history",
+    href: "/history",
     label: "History",
     desktopLabel: "History",
     icon: Clock3,
@@ -26,10 +26,10 @@ const navItems = [
 
 export function AppHeader() {
   return (
-    <header className="mx-auto flex w-full max-w-7xl flex-col gap-4 rounded-3xl border border-border bg-card/90 px-4 py-4 shadow-sm backdrop-blur sm:px-6 md:flex-row md:items-center md:justify-between">
+    <header className="mx-auto flex w-full max-w-7xl flex-col gap-4 rounded-2xl border border-border bg-card px-4 py-4 shadow-sm sm:px-6 md:flex-row md:items-center md:justify-between">
       <div className="flex items-center justify-between gap-4">
         <Link href="/" className="flex items-center gap-3">
-          <div className="flex size-10 items-center justify-center rounded-2xl bg-primary-rose-soft text-primary-rose">
+          <div className="flex size-10 items-center justify-center rounded-xl bg-primary-rose-soft text-primary-rose">
             <HeartPulse className="size-5" />
           </div>
 
@@ -38,7 +38,7 @@ export function AppHeader() {
           </span>
         </Link>
 
-        <Badge className="rounded-2xl bg-primary-rose-soft px-3 py-2 text-xs text-primary-rose hover:bg-primary-rose-soft sm:px-4 sm:text-sm">
+        <Badge className="rounded-full bg-primary-rose-soft px-3 py-2 text-xs text-primary-rose hover:bg-primary-rose-soft sm:px-4 sm:text-sm">
           <span className="md:hidden">Educational AI</span>
           <span className="hidden md:inline">Educational AI Project</span>
         </Badge>
@@ -52,7 +52,7 @@ export function AppHeader() {
             <Link
               key={item.href}
               href={item.href}
-              className="flex h-11 items-center justify-center gap-2 rounded-2xl border border-border bg-white px-3 transition hover:border-primary-rose-soft hover:bg-primary-rose-soft/50 hover:text-primary-rose md:h-auto md:justify-start md:border-0 md:bg-transparent md:px-0 md:hover:bg-transparent md:hover:text-foreground"
+              className="flex h-11 items-center justify-center gap-2 rounded-xl border border-border bg-white px-3 transition hover:border-primary-rose-soft hover:bg-primary-rose-soft/50 hover:text-primary-rose md:h-auto md:justify-start md:border-0 md:bg-transparent md:px-0 md:hover:bg-transparent md:hover:text-foreground"
             >
               <Icon className="size-4" />
               <span className="md:hidden">{item.label}</span>
