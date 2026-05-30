@@ -1,97 +1,60 @@
 import Link from "next/link";
 import {
-  Activity,
-  Brain,
+  BookOpenText,
+  BrainCircuit,
   Clock3,
-  Grid2X2,
-  HeartPulse,
-  History,
-  Info,
+  Database,
+  FileText,
+  Languages,
+  ListChecks,
   ShieldCheck,
+  SlidersHorizontal,
 } from "lucide-react";
 
+import { AppHeader } from "@/components/layout/app-header";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 
-const insights = [
+const productPillars = [
   {
-    title: "AI-Powered Insights",
+    title: "Inteligência de laudos",
     description:
-      "Machine learning predictions with explainability and transparency.",
-    icon: Brain,
+      "Estrutura o texto do exame e destaca achados mencionados, medidas e termos importantes.",
+    icon: FileText,
     className: "bg-primary-rose-soft text-primary-rose",
   },
   {
-    title: "Safe & Educational",
+    title: "Explicação educacional",
     description:
-      "Built for learning and exploration using public medical datasets.",
-    icon: ShieldCheck,
+      "Transforma linguagem técnica em uma leitura simples para apoiar a conversa com profissionais de saúde.",
+    icon: BookOpenText,
+    className: "bg-accent-blue-soft text-accent-blue",
+  },
+  {
+    title: "Experiência multilíngue",
+    description:
+      "Gera explicações em português, inglês ou espanhol conforme o fluxo escolhido.",
+    icon: Languages,
     className: "bg-secondary-teal-soft text-secondary-teal-dark",
   },
   {
-    title: "Understand with Confidence",
+    title: "WDBC complementar",
     description:
-      "See probabilities, risk bands and model reasoning in plain language.",
-    icon: Activity,
-    className: "bg-accent-blue-soft text-accent-blue",
+      "Mantém o modelo estruturado disponível quando os dados numéricos compatíveis existem.",
+    icon: Database,
+    className: "bg-muted text-muted-foreground",
   },
 ];
 
-function AppHeader() {
-  return (
-    <header className="mx-auto flex w-full max-w-7xl items-center justify-between rounded-3xl border border-border bg-card/90 px-6 py-4 shadow-sm backdrop-blur">
-      <Link href="/" className="flex items-center gap-3">
-        <div className="flex size-10 items-center justify-center rounded-2xl bg-primary-rose-soft text-primary-rose">
-          <HeartPulse className="size-5" />
-        </div>
+const steps = [
+  "Cole o texto do laudo",
+  "A IA organiza os achados",
+  "Revise a explicação educacional",
+  "Confira a compatibilidade WDBC",
+];
 
-        <span className="text-lg font-semibold tracking-tight text-foreground">
-          BreastCare <span className="text-primary-rose">AI</span>
-        </span>
-      </Link>
-
-      <nav className="hidden items-center gap-8 text-sm font-medium text-muted-foreground md:flex">
-        <Link
-          href="/analysis/new"
-          className="flex items-center gap-2 transition hover:text-foreground"
-        >
-          <HeartPulse className="size-4" />
-          New analysis
-        </Link>
-
-        <Link
-          href="/analysis/history"
-          className="flex items-center gap-2 transition hover:text-foreground"
-        >
-          <Clock3 className="size-4" />
-          History
-        </Link>
-
-        <Link
-          href="/model"
-          className="flex items-center gap-2 transition hover:text-foreground"
-        >
-          <Grid2X2 className="size-4" />
-          Model
-        </Link>
-      </nav>
-
-      <Badge className="rounded-2xl bg-primary-rose-soft px-4 py-2 text-primary-rose hover:bg-primary-rose-soft">
-        Educational AI Project
-      </Badge>
-    </header>
-  );
-}
-
-function InsightItem({
+function ProductPillar({
   title,
   description,
   icon: Icon,
@@ -99,97 +62,99 @@ function InsightItem({
 }: {
   title: string;
   description: string;
-  icon: typeof Brain;
+  icon: typeof FileText;
   className: string;
 }) {
   return (
-    <div className="flex gap-4">
-      <div
-        className={`flex size-12 shrink-0 items-center justify-center rounded-2xl ${className}`}
-      >
+    <article className="rounded-2xl border border-border bg-white p-5 shadow-sm">
+      <div className={cn("flex size-11 items-center justify-center rounded-xl", className)}>
         <Icon className="size-5" />
       </div>
 
-      <div>
-        <h3 className="font-semibold text-foreground">{title}</h3>
-        <p className="mt-1 max-w-xs text-sm leading-6 text-muted-foreground">
-          {description}
-        </p>
+      <h3 className="mt-5 text-lg font-semibold text-foreground">{title}</h3>
+      <p className="mt-2 text-sm leading-6 text-muted-foreground">
+        {description}
+      </p>
+    </article>
+  );
+}
+
+function ReportPreviewPanel() {
+  return (
+    <div className="rounded-[2rem] border border-border bg-white p-6 shadow-[0_24px_80px_rgba(15,23,42,0.08)]">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <Badge className="rounded-full bg-secondary-teal-soft px-3 py-1 text-secondary-teal-dark hover:bg-secondary-teal-soft">
+            Análise educacional
+          </Badge>
+          <h2 className="mt-5 text-2xl font-semibold tracking-tight text-foreground">
+            Resumo do laudo
+          </h2>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            O laudo menciona achados, localização e termos que podem ser
+            organizados em linguagem simples.
+          </p>
+        </div>
+
+        <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary-rose-soft text-primary-rose">
+          <BrainCircuit className="size-6" />
+        </div>
+      </div>
+
+      <div className="mt-6 grid gap-3 sm:grid-cols-2">
+        <div className="rounded-2xl border border-border bg-background p-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+            BI-RADS
+          </p>
+          <p className="mt-2 text-lg font-semibold text-secondary-teal-dark">
+            Quando mencionado
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-border bg-background p-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+            WDBC
+          </p>
+          <p className="mt-2 text-lg font-semibold text-accent-blue">
+            Painel avançado
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-6 space-y-3">
+        {[
+          "Achados principais descritos no texto",
+          "Termos importantes explicados",
+          "Lembretes educacionais sempre visíveis",
+        ].map((item) => (
+          <div
+            key={item}
+            className="flex items-center gap-3 rounded-2xl border border-border bg-background p-4"
+          >
+            <ListChecks className="size-4 shrink-0 text-secondary-teal-dark" />
+            <span className="text-sm font-medium text-foreground">{item}</span>
+          </div>
+        ))}
       </div>
     </div>
   );
 }
 
-function QuickPredictionPreviewCard() {
+function EducationalNotice() {
   return (
-    <Card className="w-full max-w-sm rounded-3xl border-border bg-card/95 p-2 shadow-[0_18px_60px_rgba(15,23,42,0.08)]">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 px-5 pt-5">
-        <CardTitle className="text-base font-semibold">
-          Quick prediction preview
-        </CardTitle>
-        <Info className="size-4 text-muted-foreground" />
-      </CardHeader>
-
-      <CardContent className="px-5 pb-5">
-        <div className="mt-2 space-y-6">
-          <div>
-            <p className="text-sm font-medium text-muted-foreground">
-              Predicted pattern
-            </p>
-
-            <Badge className="mt-3 rounded-xl bg-risk-low-soft px-3 py-1 text-risk-low hover:bg-risk-low-soft">
-              Benign
-            </Badge>
-          </div>
-
-          <div>
-            <p className="text-sm font-medium text-muted-foreground">
-              Malignant probability
-            </p>
-
-            <p className="mt-2 text-4xl font-semibold tracking-tight text-secondary-teal-dark">
-              12.4%
-            </p>
-
-            <Progress
-              value={12.4}
-              className="mt-4 h-3 bg-slate-200 [&>div]:bg-secondary-teal"
-            />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-muted-foreground">
-              Risk band
-            </span>
-
-            <Badge className="rounded-xl bg-risk-low-soft px-3 py-1 text-risk-low hover:bg-risk-low-soft">
-              <ShieldCheck className="mr-1 size-3" />
-              Low
-            </Badge>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-function EducationalDisclaimer() {
-  return (
-    <div className="rounded-3xl border border-primary-rose-soft bg-white/75 p-6 shadow-sm">
+    <div className="rounded-2xl border border-primary-rose-soft bg-white p-5 shadow-sm">
       <div className="flex gap-4">
-        <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary-rose-soft text-primary-rose">
+        <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary-rose-soft text-primary-rose">
           <ShieldCheck className="size-5" />
         </div>
 
         <div>
-          <h3 className="font-semibold text-foreground">
-            Educational only — not a medical diagnosis.
-          </h3>
-
-          <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
-            BreastCare AI provides model predictions for educational purposes
-            only. Always consult qualified healthcare professionals for medical
-            evaluation.
+          <h2 className="font-semibold text-foreground">
+            Conteúdo educacional.
+          </h2>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            O BreastCare AI ajuda a organizar informações do laudo e não
+            substitui avaliação de um profissional de saúde.
           </p>
         </div>
       </div>
@@ -199,101 +164,124 @@ function EducationalDisclaimer() {
 
 export default function Home() {
   return (
-    <main className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_80%_15%,#ffe4e6_0,transparent_28%),linear-gradient(180deg,#f8fafc_0%,#ffffff_100%)] px-5 py-6 text-foreground">
+    <main className="min-h-screen overflow-hidden bg-background px-5 py-6 text-foreground">
       <AppHeader />
 
-      <section className="mx-auto grid w-full max-w-7xl gap-12 px-2 py-16 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:py-24">
+      <section className="mx-auto grid w-full max-w-7xl gap-10 px-2 py-12 lg:grid-cols-[1.08fr_0.92fr] lg:items-center lg:py-20">
         <div>
-          <Badge className="mb-8 rounded-2xl bg-primary-rose-soft px-4 py-2 text-primary-rose hover:bg-primary-rose-soft">
-            Educational AI Project
+          <Badge className="rounded-full bg-primary-rose-soft px-4 py-2 text-primary-rose hover:bg-primary-rose-soft">
+            Report Intelligence & Explainable AI
           </Badge>
 
-          <h1 className="max-w-3xl text-5xl font-semibold tracking-tight text-foreground md:text-7xl">
-            BreastCare <span className="text-primary-rose">AI</span>
+          <h1 className="mt-7 max-w-4xl text-5xl font-semibold tracking-tight text-foreground md:text-7xl">
+            Entenda seu laudo de mama com apoio de IA educacional
           </h1>
 
           <p className="mt-6 max-w-2xl text-xl leading-9 text-muted-foreground">
-            Educational AI platform for breast cancer prediction and model
-            explainability.
+            Cole o texto do laudo, veja os principais achados estruturados e
+            receba uma explicação simples e não diagnóstica.
           </p>
 
           <div className="mt-10 flex flex-col gap-4 sm:flex-row">
             <Link
-              href="/analysis/new"
+              href="/new-analysis"
               className={cn(
                 buttonVariants(),
-                "h-14 rounded-2xl bg-primary-rose px-8 text-base font-semibold text-white shadow-lg shadow-primary-rose/20 hover:bg-primary-rose-dark"
+                "h-14 rounded-xl bg-primary-rose px-8 text-base font-semibold text-white shadow-lg shadow-primary-rose/20 hover:bg-primary-rose-dark"
               )}
             >
-              <Brain className="mr-2 size-5" />
-              Start analysis
+              <FileText className="mr-2 size-5" />
+              Analisar laudo
             </Link>
 
             <Link
-              href="/analysis/history"
+              href="/history"
               className={cn(
                 buttonVariants({ variant: "outline" }),
-                "h-14 rounded-2xl border-border bg-white px-8 text-base font-semibold text-foreground shadow-sm hover:bg-muted"
+                "h-14 rounded-xl border-border bg-white px-8 text-base font-semibold text-foreground shadow-sm hover:bg-muted"
               )}
             >
-              <History className="mr-2 size-5" />
-              View history
+              <Clock3 className="mr-2 size-5" />
+              Ver histórico
             </Link>
           </div>
 
-          <div className="mt-16 grid gap-7">
-            {insights.map((insight) => (
-              <InsightItem key={insight.title} {...insight} />
-            ))}
+          <div className="mt-10">
+            <EducationalNotice />
           </div>
         </div>
 
-        <div className="relative">
-          <div className="absolute -right-10 -top-16 hidden size-32 rounded-full border border-primary-rose-soft bg-primary-rose-soft/40 blur-2xl lg:block" />
-          <div className="absolute left-6 top-8 hidden size-24 rounded-full bg-secondary-teal-soft/60 blur-2xl lg:block" />
+        <ReportPreviewPanel />
+      </section>
 
-          <div className="relative mx-auto flex max-w-lg flex-col gap-6">
-            <div className="rounded-[2rem] border border-primary-rose-soft bg-white/80 p-6 shadow-[0_24px_80px_rgba(244,20,79,0.10)] backdrop-blur">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">
-                    AI model status
-                  </p>
-                  <h2 className="mt-1 text-2xl font-semibold text-foreground">
-                    Ready for guided analysis
-                  </h2>
-                </div>
-
-                <div className="flex size-14 items-center justify-center rounded-2xl bg-primary-rose-soft text-primary-rose">
-                  <HeartPulse className="size-7" />
-                </div>
-              </div>
-
-              <div className="mt-6 grid grid-cols-3 gap-3">
-                <div className="rounded-2xl bg-muted p-4">
-                  <p className="text-xs text-muted-foreground">Model</p>
-                  <p className="mt-1 text-sm font-semibold">Ensemble</p>
-                </div>
-
-                <div className="rounded-2xl bg-muted p-4">
-                  <p className="text-xs text-muted-foreground">Threshold</p>
-                  <p className="mt-1 text-sm font-semibold">34.3%</p>
-                </div>
-
-                <div className="rounded-2xl bg-muted p-4">
-                  <p className="text-xs text-muted-foreground">Mode</p>
-                  <p className="mt-1 text-sm font-semibold">Guided</p>
-                </div>
-              </div>
+      <section className="mx-auto w-full max-w-7xl px-2 pb-10">
+        <div className="rounded-[2rem] border border-border bg-white p-6 shadow-sm md:p-8">
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.14em] text-accent-blue">
+                Fluxo principal V2
+              </p>
+              <h2 className="mt-2 text-3xl font-semibold tracking-tight text-foreground">
+                Uma jornada guiada para entender o laudo
+              </h2>
             </div>
 
-            <QuickPredictionPreviewCard />
+            <p className="max-w-xl text-sm leading-6 text-muted-foreground">
+              A predição WDBC continua disponível como etapa avançada quando há
+              dados numéricos compatíveis.
+            </p>
+          </div>
+
+          <div className="mt-8 grid gap-4 md:grid-cols-4">
+            {steps.map((step, index) => (
+              <div
+                key={step}
+                className="rounded-2xl border border-border bg-background p-5"
+              >
+                <div className="flex size-10 items-center justify-center rounded-full bg-primary-rose text-sm font-semibold text-white">
+                  {index + 1}
+                </div>
+                <p className="mt-4 font-semibold text-foreground">{step}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       <section className="mx-auto w-full max-w-7xl px-2 pb-12">
-        <EducationalDisclaimer />
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+          {productPillars.map((pillar) => (
+            <ProductPillar key={pillar.title} {...pillar} />
+          ))}
+        </div>
+
+        <div className="mt-6 rounded-2xl border border-border bg-white p-5 shadow-sm">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex size-11 items-center justify-center rounded-xl bg-muted text-muted-foreground">
+                <SlidersHorizontal className="size-5" />
+              </div>
+              <div>
+                <h2 className="font-semibold text-foreground">
+                  Precisa do fluxo WDBC avançado?
+                </h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  O editor técnico antigo foi preservado para uso complementar.
+                </p>
+              </div>
+            </div>
+
+            <Link
+              href="/new-analysis/advanced"
+              className={cn(
+                buttonVariants({ variant: "outline" }),
+                "h-11 rounded-xl border-border bg-white px-5"
+              )}
+            >
+              Abrir WDBC avançado
+            </Link>
+          </div>
+        </div>
       </section>
     </main>
   );
