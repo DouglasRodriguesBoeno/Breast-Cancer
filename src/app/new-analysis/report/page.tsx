@@ -15,7 +15,7 @@ const doesItems = [
 
 const doesNotItems = [
   "Não substitui avaliação profissional",
-  "Não recomenda tratamento",
+  "Não sugere condutas clínicas",
   "Não define urgência médica",
   "Não inventa variáveis WDBC",
 ];
@@ -35,7 +35,7 @@ export default function ReportInputPage() {
 
           <p className="mt-5 max-w-2xl text-lg leading-8 text-muted-foreground">
             Cole o conteúdo do exame para receber uma explicação educacional
-            organizada, com foco em clareza e segurança.
+            organizada, com foco em clareza e contexto.
           </p>
 
           <div className="mt-8">

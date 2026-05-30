@@ -139,7 +139,7 @@ export function ReportResultView({ id }: { id: string }) {
 
             <p className="mt-5 max-w-2xl text-lg leading-8 text-muted-foreground">
               Organizamos o texto enviado em uma leitura simples, com termos
-              importantes e notas de segurança.
+              importantes e lembretes educacionais.
             </p>
           </div>
 
@@ -367,7 +367,7 @@ export function ReportResultView({ id }: { id: string }) {
           <div className="flex items-center gap-3">
             <ShieldCheck className="size-5 text-secondary-teal-dark" />
             <h2 className="text-xl font-semibold text-foreground">
-              Notas de segurança
+              Lembretes educacionais
             </h2>
           </div>
 

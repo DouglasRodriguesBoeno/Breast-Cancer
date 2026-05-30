@@ -4,6 +4,19 @@ import type {
   ReportAnalysis,
 } from "@/types/report-intelligence";
 
+type ReportAnalysisApiResponse = ReportAnalysis & {
+  created_at?: string;
+  provider_model?: string;
+};
+
+function normalizeReportAnalysis(report: ReportAnalysisApiResponse): ReportAnalysis {
+  return {
+    ...report,
+    createdAt: report.createdAt ?? report.created_at ?? "",
+    providerModel: report.providerModel ?? report.provider_model,
+  };
+}
+
 async function requestJson<T>(url: string, init?: RequestInit): Promise<T> {
   const response = await fetch(url, {
     ...init,
@@ -33,18 +46,31 @@ export async function analyzeReport(
     throw new Error("Report text is required to create an educational analysis.");
   }
 
-  return requestJson<AnalyzeReportResult>("/api/report-intelligence/analyze", {
-    method: "POST",
-    body: JSON.stringify(input),
-  });
+  const response = await requestJson<ReportAnalysisApiResponse>(
+    "/api/report-intelligence/analyze",
+    {
+      method: "POST",
+      body: JSON.stringify(input),
+    }
+  );
+
+  return normalizeReportAnalysis(response) as AnalyzeReportResult;
 }
 
 export async function getReportAnalysisById(
   id: string
 ): Promise<ReportAnalysis> {
-  return requestJson<ReportAnalysis>(`/api/report-intelligence/${id}`);
+  const response = await requestJson<ReportAnalysisApiResponse>(
+    `/api/report-intelligence/${id}`
+  );
+
+  return normalizeReportAnalysis(response);
 }
 
 export async function getReportAnalyses(): Promise<ReportAnalysis[]> {
-  return requestJson<ReportAnalysis[]>("/api/report-intelligence");
+  const response = await requestJson<ReportAnalysisApiResponse[]>(
+    "/api/report-intelligence"
+  );
+
+  return response.map(normalizeReportAnalysis);
 }

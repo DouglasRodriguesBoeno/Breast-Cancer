@@ -33,14 +33,14 @@ const modes = [
     ],
   },
   {
-    href: "/new-analysis/report",
+    href: "/new-analysis/demo",
     title: "Demonstração educacional",
     description: "Use exemplos guiados para entender a experiência.",
     cta: "Explorar demo",
     icon: GraduationCap,
   },
   {
-    href: "/new-analysis/report",
+    href: "/new-analysis/import",
     title: "Importar dados estruturados",
     description: "Prepare dados CSV ou JSON compatíveis com WDBC.",
     cta: "Preparar importação",
@@ -89,12 +89,12 @@ export function AnalysisModeSelection() {
             </p>
 
             <h1 className="mt-5 max-w-4xl text-4xl font-semibold tracking-tight text-foreground md:text-6xl">
-              Understand your breast exam report with educational AI
+              Entenda seu laudo de mama com apoio de IA educacional
             </h1>
 
             <p className="mt-5 max-w-2xl text-lg leading-8 text-muted-foreground">
-              Uma experiência guiada para transformar o texto do exame em uma
-              explicação educacional clara. Não substitui avaliação profissional.
+              Cole o texto do laudo, veja os principais achados estruturados e
+              receba uma explicação simples e não diagnóstica.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -105,7 +105,7 @@ export function AnalysisModeSelection() {
                   "h-12 rounded-xl bg-primary-rose px-6 text-base font-semibold text-white hover:bg-primary-rose-dark"
                 )}
               >
-                Analisar um laudo
+                Analisar laudo
                 <ArrowRight className="ml-2 size-4" />
               </Link>
 
@@ -116,7 +116,7 @@ export function AnalysisModeSelection() {
                   "h-12 rounded-xl border-border bg-white px-6 text-base font-semibold text-foreground"
                 )}
               >
-                Explorar demonstração educacional
+                Ver demonstração educacional
               </Link>
             </div>
           </div>
