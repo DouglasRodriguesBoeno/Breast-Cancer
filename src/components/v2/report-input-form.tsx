@@ -2,14 +2,16 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCircle2,
+  FileText,
+  Languages,
+  Loader2,
+} from "lucide-react";
 
 import { analyzeReport } from "@/services/report-intelligence-service";
 import type { ReportLanguage, ReportType } from "@/types/report-intelligence";
-import {
-  REPORT_LANGUAGE_LABELS,
-  REPORT_TYPE_LABELS,
-} from "@/types/report-intelligence";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -21,6 +23,20 @@ const reportTypes: ReportType[] = [
   "BIOPSY",
   "UNKNOWN",
 ];
+
+const languageLabels: Record<ReportLanguage, string> = {
+  "pt-BR": "Português",
+  en: "Inglês",
+  es: "Espanhol",
+};
+
+const reportTypeLabels: Record<ReportType, string> = {
+  MAMMOGRAPHY: "Mamografia",
+  ULTRASOUND: "Ultrassom",
+  MRI: "Ressonância de mama",
+  BIOPSY: "Biópsia",
+  UNKNOWN: "Não sei informar",
+};
 
 export function ReportInputForm() {
   const router = useRouter();
@@ -71,28 +87,43 @@ export function ReportInputForm() {
   return (
     <form
       onSubmit={onSubmit}
-      className="rounded-2xl border border-border bg-white p-6 shadow-sm"
+      className="rounded-[2rem] border border-border bg-white p-5 shadow-sm md:p-7"
     >
+      <div className="mb-6 flex items-start gap-4 rounded-2xl border border-accent-blue-soft bg-accent-blue-soft/70 p-4">
+        <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-white text-accent-blue">
+          <FileText className="size-5" />
+        </div>
+        <div>
+          <h2 className="text-lg font-semibold text-foreground">
+            Cole o texto do seu laudo
+          </h2>
+          <p className="mt-1 text-sm leading-6 text-muted-foreground">
+            O sistema vai organizar as informações mencionadas e preparar uma
+            explicação educacional em linguagem clara.
+          </p>
+        </div>
+      </div>
+
       <div>
         <label
           htmlFor="report-text"
           className="text-sm font-semibold text-foreground"
         >
-          Report text
+          Texto do laudo
         </label>
 
         <textarea
           id="report-text"
           value={reportText}
           onChange={(event) => setReportText(event.target.value)}
-          placeholder="Paste the breast exam report text here..."
+          placeholder="Cole aqui o texto do exame de mama..."
           className="mt-3 min-h-72 w-full resize-y rounded-xl border border-border bg-white p-4 text-sm leading-6 text-foreground outline-none transition placeholder:text-muted-foreground focus:border-primary-rose focus:ring-4 focus:ring-primary-rose-soft"
         />
       </div>
 
       <div className="mt-5 grid gap-4 md:grid-cols-2">
         <label className="text-sm font-semibold text-foreground">
-          Output language
+          Idioma da explicação
           <select
             value={outputLanguage}
             onChange={(event) =>
@@ -102,14 +133,14 @@ export function ReportInputForm() {
           >
             {languages.map((language) => (
               <option key={language} value={language}>
-                {REPORT_LANGUAGE_LABELS[language]}
+                {languageLabels[language]}
               </option>
             ))}
           </select>
         </label>
 
         <label className="text-sm font-semibold text-foreground">
-          Report type
+          Tipo de exame
           <select
             value={reportType}
             onChange={(event) => setReportType(event.target.value as ReportType)}
@@ -117,7 +148,7 @@ export function ReportInputForm() {
           >
             {reportTypes.map((type) => (
               <option key={type} value={type}>
-                {REPORT_TYPE_LABELS[type]}
+                {reportTypeLabels[type]}
               </option>
             ))}
           </select>
@@ -132,7 +163,8 @@ export function ReportInputForm() {
           className="mt-1 size-4 rounded border-border accent-primary-rose"
         />
         <span>
-          I understand this is educational and not a medical diagnosis.
+          Entendo que esta é uma explicação educacional e não substitui avaliação
+          profissional.
         </span>
       </label>
 
@@ -145,8 +177,8 @@ export function ReportInputForm() {
         <div className="mt-5 flex gap-3 rounded-xl border border-secondary-teal-soft bg-secondary-teal-soft p-4 text-sm leading-6 text-secondary-teal-dark">
           <CheckCircle2 className="mt-0.5 size-4 shrink-0" />
           <span>
-            The system will structure the report for educational explanation and
-            will not invent missing WDBC features.
+            A análise estrutura apenas o conteúdo informado e não inventa
+            variáveis WDBC ausentes.
           </span>
         </div>
       )}
@@ -160,8 +192,13 @@ export function ReportInputForm() {
         )}
       >
         {isSubmitting ? <Loader2 className="mr-2 size-4 animate-spin" /> : null}
-        Analyze report
+        Analisar laudo
       </button>
+
+      <div className="mt-4 flex items-center gap-2 text-xs font-medium text-muted-foreground">
+        <Languages className="size-4 text-accent-blue" />
+        Português é o idioma padrão da experiência.
+      </div>
     </form>
   );
 }

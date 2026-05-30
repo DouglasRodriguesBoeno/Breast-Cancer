@@ -44,7 +44,7 @@ export function ModeSelectionCard({
 
         {recommended ? (
           <Badge className="rounded-full bg-primary-rose-soft px-3 py-1 text-primary-rose hover:bg-primary-rose-soft">
-            Recommended
+            Recomendado
           </Badge>
         ) : null}
       </div>

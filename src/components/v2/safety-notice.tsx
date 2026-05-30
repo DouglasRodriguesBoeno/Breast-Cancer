@@ -10,12 +10,13 @@ export function SafetyNotice() {
 
         <div>
           <h2 className="text-base font-semibold text-foreground">
-            Educational only - not a medical diagnosis.
+            Uso educacional e explicativo.
           </h2>
 
           <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            BreastCare AI does not provide medical diagnosis and does not
-            replace professional medical evaluation.
+            O BreastCare AI organiza informações do texto enviado para apoiar
+            sua compreensão. Esta explicação não substitui avaliação de um
+            profissional de saúde.
           </p>
         </div>
       </div>
