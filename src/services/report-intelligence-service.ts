@@ -1,21 +1,29 @@
-import {
-  mockReportAnalysis,
-  reportAnalysisMocks,
-} from "@/data/report-intelligence-mock";
 import type {
   AnalyzeReportInput,
   AnalyzeReportResult,
   ReportAnalysis,
 } from "@/types/report-intelligence";
 
-const MOCK_PROCESSING_DELAY_MS = 900;
+async function requestJson<T>(url: string, init?: RequestInit): Promise<T> {
+  const response = await fetch(url, {
+    ...init,
+    headers: {
+      "Content-Type": "application/json",
+      ...init?.headers,
+    },
+  });
 
-function wait(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+  const data = await response.json().catch(() => null);
 
-function createMockAnalysisId() {
-  return `rep_${Date.now().toString(36)}`;
+  if (!response.ok) {
+    throw new Error(
+      data?.message ??
+        data?.error ??
+        "Unexpected error while communicating with the report intelligence API."
+    );
+  }
+
+  return data as T;
 }
 
 export async function analyzeReport(
@@ -25,22 +33,18 @@ export async function analyzeReport(
     throw new Error("Report text is required to create an educational analysis.");
   }
 
-  await wait(MOCK_PROCESSING_DELAY_MS);
-
-  return {
-    ...mockReportAnalysis,
-    id: createMockAnalysisId(),
-    inputType: input.inputType,
-    targetLanguage: input.targetLanguage,
-    reportType: input.reportType ?? mockReportAnalysis.reportType,
-    createdAt: new Date().toISOString(),
-  };
+  return requestJson<AnalyzeReportResult>("/api/report-intelligence/analyze", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
 }
 
 export async function getReportAnalysisById(
   id: string
 ): Promise<ReportAnalysis> {
-  await wait(250);
+  return requestJson<ReportAnalysis>(`/api/report-intelligence/${id}`);
+}
 
-  return reportAnalysisMocks[id] ?? { ...mockReportAnalysis, id };
+export async function getReportAnalyses(): Promise<ReportAnalysis[]> {
+  return requestJson<ReportAnalysis[]>("/api/report-intelligence");
 }

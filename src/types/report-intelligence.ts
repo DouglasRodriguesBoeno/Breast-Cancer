@@ -52,6 +52,8 @@ export type ReportAnalysis = {
   targetLanguage: ReportLanguage;
   reportType: ReportType;
   createdAt: string;
+  provider?: string;
+  providerModel?: string;
   structuredFindings: StructuredFindings;
   importantTerms: ImportantTerm[];
   educationalSummary: string;
@@ -64,7 +66,8 @@ export type AnalyzeReportInput = {
   inputType: ReportInputType;
   targetLanguage: ReportLanguage;
   reportText: string;
-  reportType?: ReportType;
+  reportType: ReportType;
+  persistRawText: boolean;
 };
 
 export type AnalyzeReportResult = ReportAnalysis;

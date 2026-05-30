@@ -4,20 +4,30 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 
-import { createReportAnalysis } from "@/services/report-service";
-import type { ReportLanguage, ReportType } from "@/types/report";
+import { analyzeReport } from "@/services/report-intelligence-service";
+import type { ReportLanguage, ReportType } from "@/types/report-intelligence";
+import {
+  REPORT_LANGUAGE_LABELS,
+  REPORT_TYPE_LABELS,
+} from "@/types/report-intelligence";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-const languages: ReportLanguage[] = ["Portuguese", "English", "Spanish"];
-const reportTypes: ReportType[] = ["Mammography", "Ultrasound", "MRI", "Other"];
+const languages: ReportLanguage[] = ["pt-BR", "en", "es"];
+const reportTypes: ReportType[] = [
+  "MAMMOGRAPHY",
+  "ULTRASOUND",
+  "MRI",
+  "BIOPSY",
+  "UNKNOWN",
+];
 
 export function ReportInputForm() {
   const router = useRouter();
   const [reportText, setReportText] = useState("");
   const [outputLanguage, setOutputLanguage] =
-    useState<ReportLanguage>("Portuguese");
-  const [reportType, setReportType] = useState<ReportType>("Mammography");
+    useState<ReportLanguage>("pt-BR");
+  const [reportType, setReportType] = useState<ReportType>("MAMMOGRAPHY");
   const [acknowledged, setAcknowledged] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -38,11 +48,12 @@ export function ReportInputForm() {
       setIsSubmitting(true);
       setErrorMessage(null);
 
-      const response = await createReportAnalysis({
-        reportText,
-        outputLanguage,
+      const response = await analyzeReport({
+        inputType: "TEXT",
+        targetLanguage: outputLanguage,
         reportType,
-        educationalAcknowledgement: acknowledged,
+        reportText,
+        persistRawText: false,
       });
 
       router.push(`/reports/${response.id}`);
@@ -90,7 +101,9 @@ export function ReportInputForm() {
             className="mt-2 h-12 w-full rounded-xl border border-border bg-white px-4 text-sm font-medium text-foreground outline-none focus:border-primary-rose focus:ring-4 focus:ring-primary-rose-soft"
           >
             {languages.map((language) => (
-              <option key={language}>{language}</option>
+              <option key={language} value={language}>
+                {REPORT_LANGUAGE_LABELS[language]}
+              </option>
             ))}
           </select>
         </label>
@@ -103,7 +116,9 @@ export function ReportInputForm() {
             className="mt-2 h-12 w-full rounded-xl border border-border bg-white px-4 text-sm font-medium text-foreground outline-none focus:border-primary-rose focus:ring-4 focus:ring-primary-rose-soft"
           >
             {reportTypes.map((type) => (
-              <option key={type}>{type}</option>
+              <option key={type} value={type}>
+                {REPORT_TYPE_LABELS[type]}
+              </option>
             ))}
           </select>
         </label>
