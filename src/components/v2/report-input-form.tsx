@@ -8,11 +8,13 @@ import {
   FileText,
   Languages,
   Loader2,
+  Upload,
 } from "lucide-react";
 
 import { analyzeReport } from "@/services/report-intelligence-service";
 import type { ReportLanguage, ReportType } from "@/types/report-intelligence";
 import { buttonVariants } from "@/components/ui/button";
+import { useTranslations } from "@/i18n/use-translations";
 import { cn } from "@/lib/utils";
 
 const languages: ReportLanguage[] = ["pt-BR", "en", "es"];
@@ -40,9 +42,10 @@ const reportTypeLabels: Record<ReportType, string> = {
 
 export function ReportInputForm() {
   const router = useRouter();
+  const { locale, t } = useTranslations();
   const [reportText, setReportText] = useState("");
   const [outputLanguage, setOutputLanguage] =
-    useState<ReportLanguage>("pt-BR");
+    useState<ReportLanguage>(locale);
   const [reportType, setReportType] = useState<ReportType>("MAMMOGRAPHY");
   const [acknowledged, setAcknowledged] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -77,7 +80,7 @@ export function ReportInputForm() {
       setErrorMessage(
         error instanceof Error
           ? error.message
-          : "Unable to submit the report analysis."
+          : t("common.error")
       );
     } finally {
       setIsSubmitting(false);
@@ -95,11 +98,10 @@ export function ReportInputForm() {
         </div>
         <div>
           <h2 className="text-lg font-semibold text-foreground">
-            Cole o texto do seu laudo
+            {t("report.panelTitle")}
           </h2>
           <p className="mt-1 text-sm leading-6 text-muted-foreground">
-            O sistema vai organizar as informações mencionadas e preparar uma
-            explicação educacional em linguagem clara.
+            {t("report.subtitle")}
           </p>
         </div>
       </div>
@@ -109,21 +111,40 @@ export function ReportInputForm() {
           htmlFor="report-text"
           className="text-sm font-semibold text-foreground"
         >
-          Texto do laudo
+          {t("report.textLabel")}
         </label>
 
         <textarea
           id="report-text"
           value={reportText}
           onChange={(event) => setReportText(event.target.value)}
-          placeholder="Cole aqui o texto do exame de mama..."
-          className="mt-3 min-h-72 w-full resize-y rounded-xl border border-border bg-white p-4 text-sm leading-6 text-foreground outline-none transition placeholder:text-muted-foreground focus:border-primary-rose focus:ring-4 focus:ring-primary-rose-soft"
+          placeholder={t("report.placeholder")}
+          className="mt-3 min-h-72 w-full resize-y rounded-xl border border-border bg-white p-4 text-sm leading-6 text-foreground outline-none transition placeholder:text-muted-foreground focus:border-primary-rose focus:ring-4 focus:ring-primary-rose-soft focus:shadow-[0_0_0_6px_rgba(225,29,72,0.08)]"
         />
+        <p className="mt-2 text-right text-xs font-medium text-muted-foreground">
+          {reportText.length.toLocaleString()} / 50.000 {t("report.count")}
+        </p>
+      </div>
+
+      <div className="mt-5 rounded-xl border border-dashed border-border bg-background p-4">
+        <div className="flex items-center gap-3">
+          <div className="flex size-10 items-center justify-center rounded-xl bg-primary-rose-soft text-primary-rose">
+            <Upload className="size-4" />
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-foreground">
+              {t("report.upload")}
+            </p>
+            <p className="mt-1 text-xs leading-5 text-muted-foreground">
+              {t("report.uploadSoon")}
+            </p>
+          </div>
+        </div>
       </div>
 
       <div className="mt-5 grid gap-4 md:grid-cols-2">
         <label className="text-sm font-semibold text-foreground">
-          Idioma da explicação
+          {t("report.language")}
           <select
             value={outputLanguage}
             onChange={(event) =>
@@ -140,7 +161,7 @@ export function ReportInputForm() {
         </label>
 
         <label className="text-sm font-semibold text-foreground">
-          Tipo de exame
+          {t("report.type")}
           <select
             value={reportType}
             onChange={(event) => setReportType(event.target.value as ReportType)}
@@ -163,8 +184,7 @@ export function ReportInputForm() {
           className="mt-1 size-4 rounded border-border accent-primary-rose"
         />
         <span>
-          Entendo que esta é uma explicação educacional e não substitui avaliação
-          profissional.
+          {t("report.ack")}
         </span>
       </label>
 
@@ -177,8 +197,7 @@ export function ReportInputForm() {
         <div className="mt-5 flex gap-3 rounded-xl border border-secondary-teal-soft bg-secondary-teal-soft p-4 text-sm leading-6 text-secondary-teal-dark">
           <CheckCircle2 className="mt-0.5 size-4 shrink-0" />
           <span>
-            A análise estrutura apenas o conteúdo informado e não inventa
-            variáveis WDBC ausentes.
+            {t("mode.report.b3")}
           </span>
         </div>
       )}
@@ -192,12 +211,12 @@ export function ReportInputForm() {
         )}
       >
         {isSubmitting ? <Loader2 className="mr-2 size-4 animate-spin" /> : null}
-        Analisar laudo
+        {t("report.submit")}
       </button>
 
       <div className="mt-4 flex items-center gap-2 text-xs font-medium text-muted-foreground">
         <Languages className="size-4 text-accent-blue" />
-        Português é o idioma padrão da experiência.
+        {t("home.feature.multi")}
       </div>
     </form>
   );

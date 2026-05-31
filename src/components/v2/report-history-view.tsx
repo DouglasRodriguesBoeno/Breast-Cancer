@@ -5,25 +5,22 @@ import { useEffect, useState } from "react";
 import { AlertTriangle, Clock3, FileText, Plus } from "lucide-react";
 
 import { getReportAnalyses } from "@/services/report-intelligence-service";
-import type { ReportAnalysis } from "@/types/report-intelligence";
-import type { ReportLanguage, ReportType } from "@/types/report-intelligence";
+import type {
+  ReportAnalysis,
+  ReportLanguage,
+  ReportType,
+} from "@/types/report-intelligence";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { BentoCard } from "@/components/v2/bento-card";
 import { SafetyNotice } from "@/components/v2/safety-notice";
+import { useTranslations } from "@/i18n/use-translations";
 import { cn } from "@/lib/utils";
-
-function formatDate(value: string) {
-  return new Date(value).toLocaleString("pt-BR", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  });
-}
 
 const languageLabels: Record<ReportLanguage, string> = {
   "pt-BR": "Português",
-  en: "Inglês",
-  es: "Espanhol",
+  en: "English",
+  es: "Español",
 };
 
 const reportTypeLabels: Record<ReportType, string> = {
@@ -34,7 +31,41 @@ const reportTypeLabels: Record<ReportType, string> = {
   UNKNOWN: "Tipo não informado",
 };
 
+function formatDate(value: string) {
+  if (!value) {
+    return "-";
+  }
+
+  return new Date(value).toLocaleString("pt-BR", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+}
+
+function HistorySkeleton() {
+  const { t } = useTranslations();
+
+  return (
+    <div className="mt-5 space-y-4">
+      {[0, 1, 2].map((item) => (
+        <div
+          key={item}
+          className="rounded-[2rem] border border-border bg-white p-6 shadow-sm"
+        >
+          <div className="h-4 w-36 rounded-full bg-muted" />
+          <div className="mt-5 h-6 w-1/2 rounded-xl bg-muted" />
+          <div className="animate-progress mt-5 h-20 rounded-2xl bg-gradient-to-r from-muted via-white to-muted" />
+        </div>
+      ))}
+      <p className="text-sm font-medium text-muted-foreground">
+        {t("common.loading")}
+      </p>
+    </div>
+  );
+}
+
 export function ReportHistoryView() {
+  const { t } = useTranslations();
   const [reports, setReports] = useState<ReportAnalysis[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -48,46 +79,41 @@ export function ReportHistoryView() {
         const response = await getReportAnalyses();
         setReports(response);
       } catch (error) {
-        setErrorMessage(
-          error instanceof Error
-            ? error.message
-            : "Não foi possível carregar o histórico de laudos."
-        );
+        setErrorMessage(error instanceof Error ? error.message : t("common.error"));
       } finally {
         setIsLoading(false);
       }
     }
 
     loadReports();
-  }, []);
+  }, [t]);
 
   return (
     <section className="mx-auto w-full max-w-7xl px-2 py-12 lg:py-16">
-      <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+      <div className="animate-slide-up flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <Badge className="rounded-full bg-primary-rose-soft px-3 py-1 text-primary-rose hover:bg-primary-rose-soft">
-            Histórico
+            {t("nav.history")}
           </Badge>
 
           <h1 className="mt-5 text-4xl font-semibold tracking-tight text-foreground md:text-5xl">
-            Análises de laudos
+            {t("history.title")}
           </h1>
 
           <p className="mt-5 max-w-2xl text-lg leading-8 text-muted-foreground">
-            Revise suas explicações educacionais anteriores em uma linha do
-            tempo simples e fácil de acompanhar.
+            {t("history.subtitle")}
           </p>
         </div>
 
         <Link
-          href="/new-analysis"
+          href="/new-analysis/report"
           className={cn(
             buttonVariants(),
             "h-12 rounded-xl bg-primary-rose px-5 text-white hover:bg-primary-rose-dark"
           )}
         >
           <Plus className="mr-2 size-4" />
-          Nova análise
+          {t("nav.new")}
         </Link>
       </div>
 
@@ -101,25 +127,17 @@ export function ReportHistoryView() {
             </div>
             <div>
               <h2 className="text-xl font-semibold text-foreground">
-                Linha do tempo
+                Timeline
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                Exibindo registros carregados de /api/report-intelligence.
+                /api/report-intelligence
               </p>
             </div>
           </div>
         </BentoCard>
       </div>
 
-      {isLoading ? (
-        <div className="mt-5">
-          <BentoCard>
-            <p className="text-sm font-medium text-muted-foreground">
-              Carregando histórico de laudos...
-            </p>
-          </BentoCard>
-        </div>
-      ) : null}
+      {isLoading ? <HistorySkeleton /> : null}
 
       {errorMessage ? (
         <div className="mt-5">
@@ -128,7 +146,7 @@ export function ReportHistoryView() {
               <AlertTriangle className="mt-0.5 size-5 shrink-0 text-risk-medium" />
               <div>
                 <h2 className="font-semibold text-foreground">
-                  Não foi possível carregar o histórico
+                  {t("common.error")}
                 </h2>
                 <p className="mt-2 text-sm leading-6 text-muted-foreground">
                   {errorMessage}
@@ -146,11 +164,10 @@ export function ReportHistoryView() {
               <FileText className="size-6" />
             </div>
             <h2 className="mt-5 text-2xl font-semibold text-foreground">
-              Nenhuma análise de laudo ainda
+              {t("history.empty")}
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-muted-foreground">
-              Quando você enviar um laudo pelo fluxo guiado, ele aparecerá aqui
-              com data, tipo de exame, BI-RADS quando mencionado e status WDBC.
+              {t("history.subtitle")}
             </p>
             <Link
               href="/new-analysis/report"
@@ -159,7 +176,7 @@ export function ReportHistoryView() {
                 "mt-6 h-12 rounded-xl bg-primary-rose px-6 text-white hover:bg-primary-rose-dark"
               )}
             >
-              Começar uma análise
+              {t("history.emptyCta")}
             </Link>
           </BentoCard>
         </div>
@@ -170,7 +187,8 @@ export function ReportHistoryView() {
           {reports.map((report, index) => (
             <article
               key={report.id}
-              className="relative rounded-[2rem] border border-border bg-white p-5 shadow-sm md:p-6"
+              style={{ animationDelay: `${index * 70}ms` }}
+              className="card-hover-lift animate-slide-up relative rounded-[2rem] border border-border bg-white p-5 shadow-sm md:p-6"
             >
               <div className="absolute left-6 top-6 hidden h-[calc(100%-3rem)] w-px bg-border md:block" />
 
@@ -190,19 +208,19 @@ export function ReportHistoryView() {
                     <Badge className="rounded-full bg-primary-rose-soft px-3 py-1 text-primary-rose hover:bg-primary-rose-soft">
                       WDBC:{" "}
                       {report.wdbcCompatibility.canRunPrediction
-                        ? "compatível"
-                        : "não compatível"}
+                        ? t("result.wdbcYes")
+                        : t("result.wdbcNo")}
                     </Badge>
                   </div>
 
                   <h2 className="mt-4 text-xl font-semibold text-foreground">
-                    Análise educacional de laudo
+                    {t("result.title")}
                   </h2>
 
                   <div className="mt-4 grid gap-3 sm:grid-cols-3">
                     <div className="rounded-xl border border-border bg-background p-4">
                       <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                        Data
+                        {t("result.date")}
                       </p>
                       <p className="mt-1 text-sm font-medium text-foreground">
                         {formatDate(report.createdAt)}
@@ -214,16 +232,17 @@ export function ReportHistoryView() {
                         BI-RADS
                       </p>
                       <p className="mt-1 text-sm font-medium text-foreground">
-                        {report.structuredFindings.birads ?? "Não mencionado"}
+                        {report.structuredFindings.birads ??
+                          t("common.notMentioned")}
                       </p>
                     </div>
 
                     <div className="rounded-xl border border-border bg-background p-4">
                       <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                        Provedor
+                        {t("result.provider")}
                       </p>
                       <p className="mt-1 text-sm font-medium text-foreground">
-                        {report.provider ?? "Não informado"}
+                        {report.provider ?? t("common.notInformed")}
                       </p>
                     </div>
                   </div>
@@ -240,7 +259,7 @@ export function ReportHistoryView() {
                     "h-11 rounded-xl border-border bg-white px-5"
                   )}
                 >
-                  Ver detalhes
+                  {t("common.viewDetails")}
                 </Link>
               </div>
             </article>

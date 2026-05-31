@@ -1,189 +1,168 @@
+"use client";
+
 import Link from "next/link";
 import {
   ArrowRight,
-  BrainCircuit,
   Database,
   FileText,
   GraduationCap,
-  ListChecks,
-  MessageSquareText,
-  ShieldCheck,
+  HeartPulse,
   SlidersHorizontal,
+  X,
 } from "lucide-react";
 
-import { ModeSelectionCard } from "@/components/v2/mode-selection-card";
-import { SafetyNotice } from "@/components/v2/safety-notice";
-import { buttonVariants } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { V2LanguageSwitcher } from "@/components/v2/language-switcher";
+import { V2IconBubble } from "@/components/v2/v2-primitives";
+import { useTranslations } from "@/i18n/use-translations";
 import { cn } from "@/lib/utils";
 
-const modes = [
+const modeConfig = [
   {
     href: "/new-analysis/report",
-    title: "Analisar laudo",
-    description:
-      "Cole o texto do exame e receba uma explicação educacional organizada.",
-    cta: "Começar pelo laudo",
+    titleKey: "mode.report.title",
+    descKey: "mode.report.desc",
+    bullets: ["mode.report.b1", "mode.report.b2", "mode.report.b3"],
     icon: FileText,
+    bubble: "bg-primary-rose-soft text-primary-rose",
+    border: "border-primary-rose/60",
     recommended: true,
-    bullets: [
-      "Identifica achados mencionados",
-      "Destaca BI-RADS quando informado",
-      "Explica termos em linguagem simples",
-      "Verifica compatibilidade WDBC",
-    ],
   },
   {
     href: "/new-analysis/demo",
-    title: "Demonstração educacional",
-    description: "Use exemplos guiados para entender a experiência.",
-    cta: "Explorar demo",
+    titleKey: "mode.demo.title",
+    descKey: "mode.demo.desc",
+    bullets: ["mode.demo.b1", "mode.demo.b2", "mode.demo.b3"],
     icon: GraduationCap,
+    bubble: "bg-secondary-teal-soft text-secondary-teal-dark",
+    border: "border-secondary-teal-soft",
+    recommended: false,
   },
   {
     href: "/new-analysis/import",
-    title: "Importar dados estruturados",
-    description: "Prepare dados CSV ou JSON compatíveis com WDBC.",
-    cta: "Preparar importação",
+    titleKey: "mode.import.title",
+    descKey: "mode.import.desc",
+    bullets: ["mode.import.b1", "mode.import.b2", "mode.import.b3"],
     icon: Database,
+    bubble: "bg-accent-blue-soft text-accent-blue",
+    border: "border-accent-blue-soft",
+    recommended: false,
   },
   {
     href: "/new-analysis/advanced",
-    title: "Entrada WDBC avançada",
-    description: "Acesse o fluxo técnico das 30 variáveis do modelo.",
-    cta: "Abrir fluxo avançado",
+    titleKey: "mode.advanced.title",
+    descKey: "mode.advanced.desc",
+    bullets: ["mode.advanced.b1", "mode.advanced.b2", "mode.advanced.b3"],
     icon: SlidersHorizontal,
-  },
-];
-
-const steps = [
-  {
-    title: "Cole o laudo",
-    description: "Comece com o texto do exame, sem preencher variáveis técnicas.",
-    icon: MessageSquareText,
-  },
-  {
-    title: "A IA estrutura achados",
-    description: "O sistema organiza termos, medidas e menções relevantes.",
-    icon: BrainCircuit,
-  },
-  {
-    title: "Revise a explicação",
-    description: "Receba uma leitura educacional em linguagem simples.",
-    icon: ListChecks,
-  },
-  {
-    title: "Cheque WDBC",
-    description: "Veja se há dados suficientes para o modelo estruturado.",
-    icon: ShieldCheck,
+    bubble: "bg-violet-100 text-violet-700",
+    border: "border-violet-100",
+    recommended: false,
   },
 ];
 
 export function AnalysisModeSelection() {
+  const { t } = useTranslations();
+
   return (
-    <div className="mx-auto w-full max-w-7xl px-2 py-10 lg:py-14">
-      <section className="rounded-[2rem] border border-border bg-white px-6 py-8 shadow-sm md:px-10 lg:px-12 lg:py-12">
-        <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.14em] text-primary-rose">
-              BreastCare AI V2
-            </p>
-
-            <h1 className="mt-5 max-w-4xl text-4xl font-semibold tracking-tight text-foreground md:text-6xl">
-              Entenda seu laudo de mama com apoio de IA educacional
-            </h1>
-
-            <p className="mt-5 max-w-2xl text-lg leading-8 text-muted-foreground">
-              Cole o texto do laudo, veja os principais achados estruturados e
-              receba uma explicação simples e não diagnóstica.
-            </p>
-
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link
-                href="/new-analysis/report"
-                className={cn(
-                  buttonVariants(),
-                  "h-12 rounded-xl bg-primary-rose px-6 text-base font-semibold text-white hover:bg-primary-rose-dark"
-                )}
-              >
-                Analisar laudo
-                <ArrowRight className="ml-2 size-4" />
-              </Link>
-
-              <Link
-                href="/new-analysis/report"
-                className={cn(
-                  buttonVariants({ variant: "outline" }),
-                  "h-12 rounded-xl border-border bg-white px-6 text-base font-semibold text-foreground"
-                )}
-              >
-                Ver demonstração educacional
-              </Link>
+    <div className="mx-auto w-full max-w-5xl px-2 py-10 lg:py-14">
+      <section className="animate-slide-up rounded-[2rem] border border-border bg-white p-5 shadow-[0_24px_80px_rgba(15,23,42,0.08)] md:p-8">
+        <div className="flex items-center justify-between gap-4">
+          <Link href="/" className="flex items-center gap-3">
+            <div className="flex size-10 items-center justify-center rounded-xl bg-primary-rose-soft text-primary-rose">
+              <HeartPulse className="size-5" />
             </div>
-          </div>
+            <span className="text-lg font-semibold tracking-tight text-foreground">
+              BreastCare <span className="text-primary-rose">AI</span>
+            </span>
+          </Link>
 
-          <div className="rounded-2xl border border-border bg-background p-5">
-            <SafetyNotice />
+          <div className="flex items-center gap-2">
+            <V2LanguageSwitcher />
+            <Link
+              href="/"
+              className="flex size-10 items-center justify-center rounded-xl border border-border bg-white text-muted-foreground transition hover:bg-muted hover:text-foreground"
+              aria-label="Close"
+            >
+              <X className="size-4" />
+            </Link>
           </div>
         </div>
-      </section>
 
-      <section className="mt-8 rounded-[2rem] border border-border bg-white p-6 shadow-sm md:p-8">
-        <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.14em] text-accent-blue">
-              Fluxo guiado
-            </p>
-            <h2 className="mt-2 text-2xl font-semibold text-foreground">
-              Do texto do laudo à explicação educacional
-            </h2>
-          </div>
-          <p className="max-w-xl text-sm leading-6 text-muted-foreground">
-            O caminho principal prioriza compreensão antes de qualquer recurso
-            técnico avançado.
+        <div className="mx-auto mt-10 max-w-2xl text-center">
+          <h1 className="text-4xl font-semibold tracking-tight text-foreground md:text-5xl">
+            {t("mode.title")}
+          </h1>
+          <p className="mt-4 text-base leading-7 text-muted-foreground">
+            {t("mode.subtitle")}
           </p>
         </div>
 
-        <div className="mt-7 grid gap-4 md:grid-cols-4">
-          {steps.map((step, index) => {
-            const Icon = step.icon;
+        <div className="mt-9 grid gap-5 md:grid-cols-2">
+          {modeConfig.map((mode, index) => {
+            const Icon = mode.icon;
 
             return (
-              <div
-                key={step.title}
-                className="relative rounded-2xl border border-border bg-background p-5"
+              <Link
+                key={mode.titleKey}
+                href={mode.href}
+                style={{ animationDelay: `${index * 90}ms` }}
+                className={cn(
+                  "card-hover-lift animate-slide-up group relative rounded-2xl border bg-white p-6",
+                  mode.border
+                )}
               >
-                <div className="flex items-center gap-3">
-                  <div className="flex size-10 items-center justify-center rounded-full bg-primary-rose text-sm font-semibold text-white">
-                    {index + 1}
+                {mode.recommended ? (
+                  <Badge className="absolute right-5 top-5 rounded-full bg-primary-rose-soft px-3 py-1 text-primary-rose hover:bg-primary-rose-soft">
+                    {t("common.recommended")}
+                  </Badge>
+                ) : null}
+
+                <V2IconBubble
+                  icon={Icon}
+                  className={cn(mode.bubble, mode.recommended && "animate-soft-pulse")}
+                />
+
+                <div className="mt-8 flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-sm font-semibold text-primary-rose">
+                      {index + 1}.
+                    </p>
+                    <h2 className="mt-1 text-2xl font-semibold text-foreground">
+                      {t(mode.titleKey)}
+                    </h2>
+                    <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                      {t(mode.descKey)}
+                    </p>
                   </div>
-                  <Icon className="size-5 text-accent-blue" />
+
+                  <div className="mt-2 flex size-10 shrink-0 items-center justify-center rounded-xl border border-border text-primary-rose transition group-hover:border-primary-rose group-hover:bg-primary-rose group-hover:text-white">
+                    <ArrowRight className="size-4" />
+                  </div>
                 </div>
-                <h3 className="mt-4 font-semibold text-foreground">
-                  {step.title}
-                </h3>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  {step.description}
-                </p>
-              </div>
+
+                <ul className="mt-5 space-y-2">
+                  {mode.bullets.map((bullet) => (
+                    <li
+                      key={bullet}
+                      className="flex items-center gap-2 text-sm text-muted-foreground"
+                    >
+                      <span className="size-1.5 rounded-full bg-secondary-teal-dark" />
+                      {t(bullet)}
+                    </li>
+                  ))}
+                </ul>
+              </Link>
             );
           })}
         </div>
-      </section>
 
-      <section className="mt-8">
-        <div className="mb-5">
-          <p className="text-sm font-semibold uppercase tracking-[0.14em] text-primary-rose">
-            Escolha seu caminho
-          </p>
-          <h2 className="mt-2 text-3xl font-semibold tracking-tight text-foreground">
-            Comece pelo modo mais confortável para você
-          </h2>
-        </div>
-
-        <div className="grid gap-5 md:grid-cols-2">
-        {modes.map((mode) => (
-          <ModeSelectionCard key={mode.title} {...mode} />
-        ))}
+        <div className="mt-8 grid gap-3">
+          <div className="rounded-2xl border border-primary-rose-soft bg-primary-rose-soft/40 p-5 text-center text-sm font-medium text-foreground">
+            {t("mode.disclaimer")}
+          </div>
+          <div className="rounded-2xl border border-border bg-background p-4 text-center text-sm text-muted-foreground">
+            {t("mode.tip")}
+          </div>
         </div>
       </section>
     </div>
