@@ -9,6 +9,8 @@ import type {
   ReportAnalysis,
   ReportLanguage,
   ReportType,
+  StructuredFindings,
+  WdbcCompatibility,
 } from "@/types/report-intelligence";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
@@ -31,15 +33,58 @@ const reportTypeLabels: Record<ReportType, string> = {
   UNKNOWN: "Tipo não informado",
 };
 
-function formatDate(value: string) {
+const HISTORY_ERROR_MESSAGE =
+  "Não foi possível carregar o histórico. Verifique a conexão com a API ou tente novamente.";
+
+function safeFormatDate(value: string | null | undefined) {
   if (!value) {
-    return "-";
+    return "Data não disponível";
   }
 
-  return new Date(value).toLocaleString("pt-BR", {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Data não disponível";
+  }
+
+  return date.toLocaleString("pt-BR", {
     dateStyle: "medium",
     timeStyle: "short",
   });
+}
+
+function getReportTypeLabel(reportType: ReportType | null | undefined) {
+  return reportType ? reportTypeLabels[reportType] ?? "Tipo não informado" : "Tipo não informado";
+}
+
+function getLanguageLabel(language: ReportLanguage | null | undefined) {
+  return language ? languageLabels[language] ?? "Idioma não informado" : "Idioma não informado";
+}
+
+function getStructuredFindings(
+  report: Partial<ReportAnalysis> | null | undefined
+): Partial<StructuredFindings> {
+  return report?.structuredFindings ?? {};
+}
+
+function getWdbcCompatibility(
+  report: Partial<ReportAnalysis> | null | undefined
+): Partial<WdbcCompatibility> {
+  return report?.wdbcCompatibility ?? {};
+}
+
+function getWdbcLabel(report: Partial<ReportAnalysis> | null | undefined) {
+  const compatibility = getWdbcCompatibility(report);
+
+  if (typeof compatibility.canRunPrediction !== "boolean") {
+    return "não avaliado";
+  }
+
+  return compatibility.canRunPrediction ? "compatível" : "não compatível";
+}
+
+function getReportId(report: Partial<ReportAnalysis>, index: number) {
+  return report.id ?? `history-item-${index}`;
 }
 
 function HistorySkeleton() {
@@ -79,7 +124,9 @@ export function ReportHistoryView() {
         const response = await getReportAnalyses();
         setReports(response);
       } catch (error) {
-        setErrorMessage(error instanceof Error ? error.message : t("common.error"));
+        setErrorMessage(
+          error instanceof Error ? error.message : HISTORY_ERROR_MESSAGE
+        );
       } finally {
         setIsLoading(false);
       }
@@ -149,7 +196,7 @@ export function ReportHistoryView() {
                   {t("common.error")}
                 </h2>
                 <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  {errorMessage}
+                  {errorMessage || HISTORY_ERROR_MESSAGE}
                 </p>
               </div>
             </div>
@@ -184,9 +231,13 @@ export function ReportHistoryView() {
 
       {!isLoading && !errorMessage && reports.length > 0 ? (
         <div className="mt-8 space-y-4">
-          {reports.map((report, index) => (
+          {reports.map((report, index) => {
+            const findings = getStructuredFindings(report);
+            const reportId = getReportId(report, index);
+
+            return (
             <article
-              key={report.id}
+              key={reportId}
               style={{ animationDelay: `${index * 70}ms` }}
               className="card-hover-lift animate-slide-up relative rounded-[2rem] border border-border bg-white p-5 shadow-sm md:p-6"
             >
@@ -200,16 +251,13 @@ export function ReportHistoryView() {
                 <div>
                   <div className="flex flex-wrap gap-2">
                     <Badge className="rounded-full bg-accent-blue-soft px-3 py-1 text-accent-blue hover:bg-accent-blue-soft">
-                      {reportTypeLabels[report.reportType]}
+                      {getReportTypeLabel(report.reportType)}
                     </Badge>
                     <Badge className="rounded-full bg-secondary-teal-soft px-3 py-1 text-secondary-teal-dark hover:bg-secondary-teal-soft">
-                      {languageLabels[report.targetLanguage]}
+                      {getLanguageLabel(report.targetLanguage)}
                     </Badge>
                     <Badge className="rounded-full bg-primary-rose-soft px-3 py-1 text-primary-rose hover:bg-primary-rose-soft">
-                      WDBC:{" "}
-                      {report.wdbcCompatibility.canRunPrediction
-                        ? t("result.wdbcYes")
-                        : t("result.wdbcNo")}
+                      WDBC: {getWdbcLabel(report)}
                     </Badge>
                   </div>
 
@@ -223,7 +271,7 @@ export function ReportHistoryView() {
                         {t("result.date")}
                       </p>
                       <p className="mt-1 text-sm font-medium text-foreground">
-                        {formatDate(report.createdAt)}
+                        {safeFormatDate(report.createdAt)}
                       </p>
                     </div>
 
@@ -232,8 +280,7 @@ export function ReportHistoryView() {
                         BI-RADS
                       </p>
                       <p className="mt-1 text-sm font-medium text-foreground">
-                        {report.structuredFindings.birads ??
-                          t("common.notMentioned")}
+                        {findings.birads ?? "Não mencionado"}
                       </p>
                     </div>
 
@@ -242,18 +289,19 @@ export function ReportHistoryView() {
                         {t("result.provider")}
                       </p>
                       <p className="mt-1 text-sm font-medium text-foreground">
-                        {report.provider ?? t("common.notInformed")}
+                        {report.provider ?? "Não informado"}
                       </p>
                     </div>
                   </div>
 
                   <p className="mt-4 line-clamp-2 text-sm leading-6 text-muted-foreground">
-                    {report.educationalSummary}
+                    {report.educationalSummary ??
+                      "Resumo educacional não disponível"}
                   </p>
                 </div>
 
                 <Link
-                  href={`/reports/${report.id}`}
+                  href={`/reports/${reportId}`}
                   className={cn(
                     buttonVariants({ variant: "outline" }),
                     "h-11 rounded-xl border-border bg-white px-5"
@@ -263,7 +311,8 @@ export function ReportHistoryView() {
                 </Link>
               </div>
             </article>
-          ))}
+          );
+          })}
         </div>
       ) : null}
     </section>

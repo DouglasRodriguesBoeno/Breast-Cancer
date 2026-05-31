@@ -9,6 +9,10 @@ type ReportAnalysisApiResponse = ReportAnalysis & {
   provider_model?: string;
 };
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
 function normalizeReportAnalysis(report: ReportAnalysisApiResponse): ReportAnalysis {
   return {
     ...report,
@@ -18,21 +22,47 @@ function normalizeReportAnalysis(report: ReportAnalysisApiResponse): ReportAnaly
 }
 
 async function requestJson<T>(url: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(url, {
-    ...init,
-    headers: {
-      "Content-Type": "application/json",
-      ...init?.headers,
-    },
-  });
+  let response: Response;
+
+  try {
+    response = await fetch(url, {
+      ...init,
+      headers: {
+        "Content-Type": "application/json",
+        ...init?.headers,
+      },
+    });
+  } catch {
+    throw new Error(
+      "Não foi possível carregar o histórico. Verifique a conexão com a API ou tente novamente."
+    );
+  }
 
   const data = await response.json().catch(() => null);
 
   if (!response.ok) {
+    if (response.status === 404) {
+      throw new Error(
+        "Não foi possível carregar o histórico. O endpoint da API não foi encontrado."
+      );
+    }
+
+    if (response.status >= 500) {
+      throw new Error(
+        "Não foi possível carregar o histórico. A API retornou um erro interno."
+      );
+    }
+
     throw new Error(
       data?.message ??
         data?.error ??
-        "Unexpected error while communicating with the report intelligence API."
+        "Não foi possível carregar o histórico. Verifique a conexão com a API ou tente novamente."
+    );
+  }
+
+  if (data === null) {
+    throw new Error(
+      "Não foi possível carregar o histórico. A API retornou uma resposta inválida."
     );
   }
 
@@ -68,9 +98,17 @@ export async function getReportAnalysisById(
 }
 
 export async function getReportAnalyses(): Promise<ReportAnalysis[]> {
-  const response = await requestJson<ReportAnalysisApiResponse[]>(
+  const response = await requestJson<unknown>(
     "/api/report-intelligence"
   );
 
-  return response.map(normalizeReportAnalysis);
+  if (!Array.isArray(response)) {
+    throw new Error(
+      "Não foi possível carregar o histórico. A API retornou uma resposta inválida."
+    );
+  }
+
+  return response
+    .filter(isRecord)
+    .map((item) => normalizeReportAnalysis(item as ReportAnalysisApiResponse));
 }
