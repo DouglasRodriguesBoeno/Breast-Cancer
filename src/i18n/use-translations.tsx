@@ -3,6 +3,7 @@
 import {
   createContext,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -26,18 +27,21 @@ function isSupportedLocale(value: string | null): value is UiLocale {
 }
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<UiLocale>(() => {
-    if (typeof window === "undefined") {
-      return defaultLocale;
-    }
+  const [locale, setLocaleState] = useState<UiLocale>(defaultLocale);
 
+  useEffect(() => {
     const storedLocale = window.localStorage.getItem(STORAGE_KEY);
-    return isSupportedLocale(storedLocale) ? storedLocale : defaultLocale;
-  });
+
+    if (isSupportedLocale(storedLocale)) {
+      window.setTimeout(() => setLocaleState(storedLocale), 0);
+    }
+  }, []);
 
   function setLocale(nextLocale: UiLocale) {
     setLocaleState(nextLocale);
-    window.localStorage.setItem(STORAGE_KEY, nextLocale);
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(STORAGE_KEY, nextLocale);
+    }
   }
 
   const value = useMemo<I18nContextValue>(

@@ -19,32 +19,18 @@ import { SafetyNotice } from "@/components/v2/safety-notice";
 import { useTranslations } from "@/i18n/use-translations";
 import { cn } from "@/lib/utils";
 
-const languageLabels: Record<ReportLanguage, string> = {
-  "pt-BR": "Português",
-  en: "English",
-  es: "Español",
-};
-
-const reportTypeLabels: Record<ReportType, string> = {
-  MAMMOGRAPHY: "Mamografia",
-  ULTRASOUND: "Ultrassom",
-  MRI: "Ressonância de mama",
-  BIOPSY: "Biópsia",
-  UNKNOWN: "Tipo não informado",
-};
-
 const HISTORY_ERROR_MESSAGE =
   "Não foi possível carregar o histórico. Verifique a conexão com a API ou tente novamente.";
 
-function safeFormatDate(value: string | null | undefined) {
+function safeFormatDate(value: string | null | undefined, fallback: string) {
   if (!value) {
-    return "Data não disponível";
+    return fallback;
   }
 
   const date = new Date(value);
 
   if (Number.isNaN(date.getTime())) {
-    return "Data não disponível";
+    return fallback;
   }
 
   return date.toLocaleString("pt-BR", {
@@ -53,12 +39,20 @@ function safeFormatDate(value: string | null | undefined) {
   });
 }
 
-function getReportTypeLabel(reportType: ReportType | null | undefined) {
-  return reportType ? reportTypeLabels[reportType] ?? "Tipo não informado" : "Tipo não informado";
+function getReportTypeLabel(
+  reportType: ReportType | null | undefined,
+  fallback: string,
+  t: (key: string) => string
+) {
+  return reportType ? t(`report.type.${reportType}`) : fallback;
 }
 
-function getLanguageLabel(language: ReportLanguage | null | undefined) {
-  return language ? languageLabels[language] ?? "Idioma não informado" : "Idioma não informado";
+function getLanguageLabel(
+  language: ReportLanguage | null | undefined,
+  fallback: string,
+  t: (key: string) => string
+) {
+  return language ? t(`report.language.${language}`) : fallback;
 }
 
 function getStructuredFindings(
@@ -73,11 +67,14 @@ function getWdbcCompatibility(
   return report?.wdbcCompatibility ?? {};
 }
 
-function getWdbcLabel(report: Partial<ReportAnalysis> | null | undefined) {
+function getWdbcLabel(
+  report: Partial<ReportAnalysis> | null | undefined,
+  fallback: string
+) {
   const compatibility = getWdbcCompatibility(report);
 
   if (typeof compatibility.canRunPrediction !== "boolean") {
-    return "não avaliado";
+    return fallback;
   }
 
   return compatibility.canRunPrediction ? "compatível" : "não compatível";
@@ -251,13 +248,21 @@ export function ReportHistoryView() {
                 <div>
                   <div className="flex flex-wrap gap-2">
                     <Badge className="rounded-full bg-accent-blue-soft px-3 py-1 text-accent-blue hover:bg-accent-blue-soft">
-                      {getReportTypeLabel(report.reportType)}
+                      {getReportTypeLabel(
+                        report.reportType,
+                        t("common.typeUnavailable"),
+                        t
+                      )}
                     </Badge>
                     <Badge className="rounded-full bg-secondary-teal-soft px-3 py-1 text-secondary-teal-dark hover:bg-secondary-teal-soft">
-                      {getLanguageLabel(report.targetLanguage)}
+                      {getLanguageLabel(
+                        report.targetLanguage,
+                        t("common.languageUnavailable"),
+                        t
+                      )}
                     </Badge>
                     <Badge className="rounded-full bg-primary-rose-soft px-3 py-1 text-primary-rose hover:bg-primary-rose-soft">
-                      WDBC: {getWdbcLabel(report)}
+                      WDBC: {getWdbcLabel(report, t("common.wdbcNotEvaluated"))}
                     </Badge>
                   </div>
 
@@ -271,7 +276,10 @@ export function ReportHistoryView() {
                         {t("result.date")}
                       </p>
                       <p className="mt-1 text-sm font-medium text-foreground">
-                        {safeFormatDate(report.createdAt)}
+                        {safeFormatDate(
+                          report.createdAt,
+                          t("common.dateUnavailable")
+                        )}
                       </p>
                     </div>
 
@@ -280,7 +288,7 @@ export function ReportHistoryView() {
                         BI-RADS
                       </p>
                       <p className="mt-1 text-sm font-medium text-foreground">
-                        {findings.birads ?? "Não mencionado"}
+                        {findings.birads ?? t("common.notMentioned")}
                       </p>
                     </div>
 
@@ -289,14 +297,14 @@ export function ReportHistoryView() {
                         {t("result.provider")}
                       </p>
                       <p className="mt-1 text-sm font-medium text-foreground">
-                        {report.provider ?? "Não informado"}
+                        {report.provider ?? t("common.notInformed")}
                       </p>
                     </div>
                   </div>
 
                   <p className="mt-4 line-clamp-2 text-sm leading-6 text-muted-foreground">
                     {report.educationalSummary ??
-                      "Resumo educacional não disponível"}
+                      t("common.summaryUnavailable")}
                   </p>
                 </div>
 

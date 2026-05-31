@@ -5,7 +5,6 @@ import {
   ArrowLeft,
   CheckCircle2,
   FileText,
-  HeartPulse,
   ShieldCheck,
 } from "lucide-react";
 
@@ -13,7 +12,6 @@ import { PageShell } from "@/components/layout/page-shell";
 import { BentoCard } from "@/components/v2/bento-card";
 import { ReportInputForm } from "@/components/v2/report-input-form";
 import { SafetyNotice } from "@/components/v2/safety-notice";
-import { V2LanguageSwitcher } from "@/components/v2/language-switcher";
 import { useTranslations } from "@/i18n/use-translations";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -31,29 +29,17 @@ export default function ReportInputPage() {
   return (
     <PageShell>
       <section className="mx-auto w-full max-w-7xl px-2 py-10 lg:py-14">
-        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-primary-rose-soft text-primary-rose">
-              <HeartPulse className="size-5" />
-            </div>
-            <span className="text-lg font-semibold text-foreground">
-              BreastCare <span className="text-primary-rose">AI</span>
-            </span>
+        <div className="mb-8 flex justify-end">
+          <Link
+            href="/new-analysis"
+            className={cn(
+              buttonVariants({ variant: "outline" }),
+              "h-11 rounded-xl border-border bg-white px-4"
+            )}
+          >
+            <ArrowLeft className="mr-2 size-4" />
+            {t("common.backModes")}
           </Link>
-
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <V2LanguageSwitcher />
-            <Link
-              href="/new-analysis"
-              className={cn(
-                buttonVariants({ variant: "outline" }),
-                "h-11 rounded-xl border-border bg-white px-4"
-              )}
-            >
-              <ArrowLeft className="mr-2 size-4" />
-              {t("common.backModes")}
-            </Link>
-          </div>
         </div>
 
         <div className="animate-slide-up">

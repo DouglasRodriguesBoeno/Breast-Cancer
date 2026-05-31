@@ -9,7 +9,6 @@ import {
   Database,
   FileText,
   Globe2,
-  HeartPulse,
   Layers3,
   LockKeyhole,
   PlayCircle,
@@ -18,74 +17,12 @@ import {
   Target,
 } from "lucide-react";
 
-import { V2LanguageSwitcher } from "@/components/v2/language-switcher";
+import { AppHeader } from "@/components/layout/app-header";
 import { V2FeatureCard, V2IconBubble } from "@/components/v2/v2-primitives";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { useTranslations } from "@/i18n/use-translations";
 import { cn } from "@/lib/utils";
-
-function LandingHeader() {
-  const { t } = useTranslations();
-
-  return (
-    <header className="animate-fade-in mx-auto flex w-full max-w-7xl flex-col gap-4 rounded-2xl border border-border bg-white px-4 py-4 shadow-sm sm:px-6 lg:flex-row lg:items-center lg:justify-between">
-      <Link href="/" className="flex items-center gap-3">
-        <div className="flex size-10 items-center justify-center rounded-xl bg-primary-rose-soft text-primary-rose">
-          <HeartPulse className="size-5" />
-        </div>
-        <div>
-          <p className="text-lg font-semibold tracking-tight text-foreground">
-            BreastCare <span className="text-primary-rose">AI</span>
-          </p>
-          <p className="text-xs font-medium text-muted-foreground">
-            Report Intelligence & Explainable AI
-          </p>
-        </div>
-      </Link>
-
-      <nav className="grid grid-cols-2 gap-2 text-sm font-medium text-muted-foreground sm:grid-cols-5 lg:flex lg:items-center lg:gap-7">
-        {[
-          ["#how", t("nav.how")],
-          ["#features", t("nav.features")],
-          ["/model", t("nav.model")],
-          ["#pricing", t("nav.pricing")],
-          ["#about", t("nav.about")],
-        ].map(([href, label]) => (
-          <Link
-            key={href}
-            href={href}
-            className="rounded-xl px-3 py-2 transition hover:bg-muted hover:text-foreground"
-          >
-            {label}
-          </Link>
-        ))}
-      </nav>
-
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-        <V2LanguageSwitcher />
-        <Link
-          href="/history"
-          className={cn(
-            buttonVariants({ variant: "outline" }),
-            "h-11 rounded-xl border-border bg-white px-5"
-          )}
-        >
-          {t("nav.signIn")}
-        </Link>
-        <Link
-          href="/new-analysis/report"
-          className={cn(
-            buttonVariants(),
-            "h-11 rounded-xl bg-primary-rose px-5 text-white hover:bg-primary-rose-dark"
-          )}
-        >
-          {t("nav.start")}
-        </Link>
-      </div>
-    </header>
-  );
-}
 
 function HeroVisual() {
   const { t } = useTranslations();
@@ -177,7 +114,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen overflow-hidden bg-background px-5 py-6 text-foreground">
-      <LandingHeader />
+      <AppHeader />
 
       <section className="mx-auto grid w-full max-w-7xl gap-12 px-2 py-14 lg:grid-cols-[1.04fr_0.96fr] lg:items-center lg:py-20">
         <div className="animate-slide-up">

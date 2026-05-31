@@ -22,6 +22,8 @@ import type {
   ReportLanguage,
   ReportMeasurement,
   ReportType,
+  StructuredFindings,
+  WdbcCompatibility,
 } from "@/types/report-intelligence";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
@@ -30,37 +32,61 @@ import { SafetyNotice } from "@/components/v2/safety-notice";
 import { useTranslations } from "@/i18n/use-translations";
 import { cn } from "@/lib/utils";
 
-const languageLabels: Record<ReportLanguage, string> = {
-  "pt-BR": "Português",
-  en: "English",
-  es: "Español",
-};
-
-const reportTypeLabels: Record<ReportType, string> = {
-  MAMMOGRAPHY: "Mamografia",
-  ULTRASOUND: "Ultrassom",
-  MRI: "Ressonância de mama",
-  BIOPSY: "Biópsia",
-  UNKNOWN: "Tipo não informado",
-};
-
 function valueOrFallback(value: string | null | undefined, fallback: string) {
   return value && value.trim().length > 0 ? value : fallback;
 }
 
 function formatDate(value: string) {
   if (!value) {
-    return "-";
+    return "";
   }
 
-  return new Date(value).toLocaleString("pt-BR", {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+
+  return date.toLocaleString("pt-BR", {
     dateStyle: "medium",
     timeStyle: "short",
   });
 }
 
-function formatMeasurement(measurement: ReportMeasurement) {
-  return `${measurement.value} ${measurement.unit} - ${measurement.context}`;
+function formatMeasurement(measurement: Partial<ReportMeasurement>) {
+  const value = measurement.value ?? "";
+  const unit = measurement.unit ?? "";
+  const context = measurement.context ?? "";
+
+  return [String(value), unit, context].filter(Boolean).join(" - ");
+}
+
+function getStructuredFindings(
+  report: Partial<ReportAnalysis>
+): Partial<StructuredFindings> {
+  return report.structuredFindings ?? {};
+}
+
+function getWdbcCompatibility(
+  report: Partial<ReportAnalysis>
+): Partial<WdbcCompatibility> {
+  return report.wdbcCompatibility ?? {};
+}
+
+function getReportTypeLabel(
+  reportType: ReportType | null | undefined,
+  fallback: string,
+  t: (key: string) => string
+) {
+  return reportType ? t(`report.type.${reportType}`) : fallback;
+}
+
+function getLanguageLabel(
+  language: ReportLanguage | null | undefined,
+  fallback: string,
+  t: (key: string) => string
+) {
+  return language ? t(`report.language.${language}`) : fallback;
 }
 
 function LoadingState() {
@@ -132,11 +158,38 @@ export function ReportResultView({ id }: { id: string }) {
     return <ErrorState message={errorMessage ?? t("common.error")} />;
   }
 
-  const findings = report.structuredFindings;
-  const measurements = findings.measurements ?? [];
-  const detected = report.wdbcCompatibility.detectedFeaturesCount;
-  const required = Math.max(report.wdbcCompatibility.requiredFeaturesCount, 1);
+  const findings = getStructuredFindings(report);
+  const measurements = Array.isArray(findings.measurements)
+    ? findings.measurements
+    : [];
+  const wdbcCompatibility = getWdbcCompatibility(report);
+  const detected = wdbcCompatibility.detectedFeaturesCount ?? 0;
+  const required = Math.max(wdbcCompatibility.requiredFeaturesCount ?? 0, 1);
   const compatibilityPercent = Math.round((detected / required) * 100);
+  const canRunPrediction = wdbcCompatibility.canRunPrediction;
+  const wdbcLabel =
+    typeof canRunPrediction === "boolean"
+      ? canRunPrediction
+        ? t("result.wdbcYes")
+        : t("result.wdbcNo")
+      : t("common.wdbcNotEvaluated");
+  const summary = report.educationalSummary ?? t("common.summaryUnavailable");
+  const simpleExplanation =
+    report.simpleExplanation ?? t("common.summaryUnavailable");
+  const importantTerms = Array.isArray(report.importantTerms)
+    ? report.importantTerms
+    : [];
+  const safetyNotes = Array.isArray(report.safetyNotes)
+    ? report.safetyNotes
+    : [t("result.safety")];
+  const mentionedFindings = Array.isArray(findings.mentionedFindings)
+    ? findings.mentionedFindings
+    : [];
+  const mentionedRecommendations = Array.isArray(
+    findings.mentionedRecommendations
+  )
+    ? findings.mentionedRecommendations
+    : [];
 
   return (
     <div className="animate-fade-in">
@@ -151,10 +204,18 @@ export function ReportResultView({ id }: { id: string }) {
                 {t("common.educational")}
               </Badge>
               <Badge className="rounded-full bg-accent-blue-soft px-3 py-1 text-accent-blue hover:bg-accent-blue-soft">
-                {languageLabels[report.detectedLanguage]}
+                {getLanguageLabel(
+                  report.detectedLanguage,
+                  t("common.languageUnavailable"),
+                  t
+                )}
               </Badge>
               <Badge className="rounded-full bg-secondary-teal-soft px-3 py-1 text-secondary-teal-dark hover:bg-secondary-teal-soft">
-                {reportTypeLabels[report.reportType]}
+                {getReportTypeLabel(
+                  report.reportType,
+                  t("common.typeUnavailable"),
+                  t
+                )}
               </Badge>
             </div>
 
@@ -163,7 +224,7 @@ export function ReportResultView({ id }: { id: string }) {
             </h1>
 
             <p className="mt-5 max-w-3xl text-lg leading-8 text-muted-foreground">
-              {report.educationalSummary}
+              {summary}
             </p>
           </div>
 
@@ -181,8 +242,18 @@ export function ReportResultView({ id }: { id: string }) {
         <div className="mt-8 grid gap-4 md:grid-cols-4">
           {[
             [t("result.birads"), valueOrFallback(findings.birads, t("common.notMentioned"))],
-            [t("result.reportType"), reportTypeLabels[report.reportType]],
-            [t("result.date"), formatDate(report.createdAt)],
+            [
+              t("result.reportType"),
+              getReportTypeLabel(
+                report.reportType,
+                t("common.typeUnavailable"),
+                t
+              ),
+            ],
+            [
+              t("result.date"),
+              formatDate(report.createdAt) || t("common.dateUnavailable"),
+            ],
             [
               t("result.provider"),
               `${valueOrFallback(report.provider, t("common.notInformed"))}${
@@ -217,7 +288,7 @@ export function ReportResultView({ id }: { id: string }) {
           </div>
 
           <p className="mt-6 text-lg leading-8 text-muted-foreground">
-            {report.simpleExplanation}
+            {simpleExplanation}
           </p>
         </BentoCard>
       </div>
@@ -263,7 +334,7 @@ export function ReportResultView({ id }: { id: string }) {
                   <li
                     key={`${measurement.value}-${measurement.unit}-${measurement.context}`}
                   >
-                    {formatMeasurement(measurement)}
+                  {formatMeasurement(measurement)}
                   </li>
                 ))}
               </ul>
@@ -280,8 +351,8 @@ export function ReportResultView({ id }: { id: string }) {
                 {t("result.mentioned")}
               </p>
               <ul className="mt-3 space-y-2 text-sm leading-6 text-muted-foreground">
-                {(findings.mentionedFindings ?? []).length > 0 ? (
-                  findings.mentionedFindings.map((item) => (
+                {mentionedFindings.length > 0 ? (
+                  mentionedFindings.map((item) => (
                     <li
                       key={item}
                       className="flex items-center justify-between gap-3"
@@ -303,8 +374,8 @@ export function ReportResultView({ id }: { id: string }) {
                 {t("result.recommendations")}
               </p>
               <ul className="mt-3 space-y-2 text-sm leading-6 text-muted-foreground">
-                {(findings.mentionedRecommendations ?? []).length > 0 ? (
-                  findings.mentionedRecommendations.map((item) => (
+                {mentionedRecommendations.length > 0 ? (
+                  mentionedRecommendations.map((item) => (
                     <li key={item}>{item}</li>
                   ))
                 ) : (
@@ -325,7 +396,8 @@ export function ReportResultView({ id }: { id: string }) {
             </div>
 
             <div className="mt-5 space-y-3">
-              {report.importantTerms.map((item, index) => (
+              {importantTerms.length > 0 ? (
+                importantTerms.map((item, index) => (
                 <div
                   key={item.term}
                   className="card-hover-lift rounded-2xl border border-border bg-background p-4"
@@ -340,7 +412,12 @@ export function ReportResultView({ id }: { id: string }) {
                     {item.explanation}
                   </p>
                 </div>
-              ))}
+                ))
+              ) : (
+                <p className="rounded-2xl border border-border bg-background p-4 text-sm text-muted-foreground">
+                  {t("common.notMentioned")}
+                </p>
+              )}
             </div>
           </BentoCard>
 
@@ -354,17 +431,15 @@ export function ReportResultView({ id }: { id: string }) {
 
             <div className="mt-5 rounded-xl border border-border bg-background p-4 text-sm leading-6 text-muted-foreground">
               <p className="font-semibold text-foreground">
-                {report.wdbcCompatibility.canRunPrediction
-                  ? t("result.wdbcYes")
-                  : t("result.wdbcNo")}
+                {wdbcLabel}
               </p>
               <p className="mt-2">
-                {report.wdbcCompatibility.canRunPrediction
-                  ? report.wdbcCompatibility.reason
+                {canRunPrediction
+                  ? wdbcCompatibility.reason ?? t("common.notInformed")
                   : t("result.wdbcMissing")}
               </p>
               <p className="mt-3">
-                {detected} / {report.wdbcCompatibility.requiredFeaturesCount}
+                {detected} / {wdbcCompatibility.requiredFeaturesCount ?? 0}
               </p>
               <div className="mt-4 h-3 overflow-hidden rounded-full bg-border">
                 <div
@@ -372,7 +447,7 @@ export function ReportResultView({ id }: { id: string }) {
                   style={{ width: `${compatibilityPercent}%` }}
                 />
               </div>
-              {report.wdbcCompatibility.canRunPrediction ? (
+              {canRunPrediction ? (
                 <Link
                   href="/new-analysis/advanced"
                   className={cn(
@@ -426,7 +501,7 @@ export function ReportResultView({ id }: { id: string }) {
           </div>
 
           <ul className="mt-5 space-y-3 text-sm leading-6 text-muted-foreground">
-            {report.safetyNotes.map((note) => (
+            {safetyNotes.map((note) => (
               <li key={note}>{note}</li>
             ))}
           </ul>

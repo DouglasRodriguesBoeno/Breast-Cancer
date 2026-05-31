@@ -84,6 +84,12 @@ export async function analyzeReport(
     }
   );
 
+  if (!isRecord(response)) {
+    throw new Error(
+      "Não foi possível carregar o histórico. A API retornou uma resposta inválida."
+    );
+  }
+
   return normalizeReportAnalysis(response) as AnalyzeReportResult;
 }
 
@@ -93,6 +99,12 @@ export async function getReportAnalysisById(
   const response = await requestJson<ReportAnalysisApiResponse>(
     `/api/report-intelligence/${id}`
   );
+
+  if (!isRecord(response)) {
+    throw new Error(
+      "Não foi possível carregar o histórico. A API retornou uma resposta inválida."
+    );
+  }
 
   return normalizeReportAnalysis(response);
 }

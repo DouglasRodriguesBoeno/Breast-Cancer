@@ -26,26 +26,12 @@ const reportTypes: ReportType[] = [
   "UNKNOWN",
 ];
 
-const languageLabels: Record<ReportLanguage, string> = {
-  "pt-BR": "Português",
-  en: "Inglês",
-  es: "Espanhol",
-};
-
-const reportTypeLabels: Record<ReportType, string> = {
-  MAMMOGRAPHY: "Mamografia",
-  ULTRASOUND: "Ultrassom",
-  MRI: "Ressonância de mama",
-  BIOPSY: "Biópsia",
-  UNKNOWN: "Não sei informar",
-};
-
 export function ReportInputForm() {
   const router = useRouter();
   const { locale, t } = useTranslations();
   const [reportText, setReportText] = useState("");
-  const [outputLanguage, setOutputLanguage] =
-    useState<ReportLanguage>(locale);
+  const [selectedLanguage, setSelectedLanguage] =
+    useState<ReportLanguage | null>(null);
   const [reportType, setReportType] = useState<ReportType>("MAMMOGRAPHY");
   const [acknowledged, setAcknowledged] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -55,6 +41,8 @@ export function ReportInputForm() {
     () => reportText.trim().length > 0 && acknowledged && !isSubmitting,
     [acknowledged, isSubmitting, reportText]
   );
+
+  const outputLanguage = selectedLanguage ?? locale;
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -148,13 +136,13 @@ export function ReportInputForm() {
           <select
             value={outputLanguage}
             onChange={(event) =>
-              setOutputLanguage(event.target.value as ReportLanguage)
+              setSelectedLanguage(event.target.value as ReportLanguage)
             }
             className="mt-2 h-12 w-full rounded-xl border border-border bg-white px-4 text-sm font-medium text-foreground outline-none focus:border-primary-rose focus:ring-4 focus:ring-primary-rose-soft"
           >
             {languages.map((language) => (
               <option key={language} value={language}>
-                {languageLabels[language]}
+                {t(`report.language.${language}`)}
               </option>
             ))}
           </select>
@@ -169,7 +157,7 @@ export function ReportInputForm() {
           >
             {reportTypes.map((type) => (
               <option key={type} value={type}>
-                {reportTypeLabels[type]}
+                {t(`report.type.${type}`)}
               </option>
             ))}
           </select>

@@ -1,32 +1,38 @@
 "use client";
 
 import Link from "next/link";
-import { Clock3, FilePlus2, Grid2X2, HeartPulse } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { Clock3, FilePlus2, Grid2X2, HeartPulse, ListChecks } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { V2LanguageSwitcher } from "@/components/v2/language-switcher";
+import { buttonVariants } from "@/components/ui/button";
 import { useTranslations } from "@/i18n/use-translations";
+import { cn } from "@/lib/utils";
 
 export function AppHeader() {
   const { t } = useTranslations();
+  const pathname = usePathname();
+  const isHome = pathname === "/";
 
   const navItems = [
     {
-      href: "/new-analysis",
-      label: t("nav.new"),
-      desktopLabel: t("nav.new"),
+      href: isHome ? "#how" : "/#how",
+      label: t("nav.how"),
+      icon: ListChecks,
+    },
+    {
+      href: "/#features",
+      label: t("nav.features"),
       icon: FilePlus2,
     },
     {
       href: "/history",
       label: t("nav.history"),
-      desktopLabel: t("nav.history"),
       icon: Clock3,
     },
     {
       href: "/model",
       label: t("nav.model"),
-      desktopLabel: t("nav.model"),
       icon: Grid2X2,
     },
   ];
@@ -44,13 +50,13 @@ export function AppHeader() {
           </span>
         </Link>
 
-        <Badge className="rounded-full bg-primary-rose-soft px-3 py-2 text-xs text-primary-rose hover:bg-primary-rose-soft sm:px-4 sm:text-sm">
-          <span>{t("nav.educational")}</span>
-        </Badge>
+        <span className="hidden rounded-full bg-primary-rose-soft px-3 py-2 text-xs font-semibold text-primary-rose sm:inline-flex">
+          {t("nav.educational")}
+        </span>
       </div>
 
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-5">
-        <nav className="grid grid-cols-3 gap-2 text-xs font-medium text-muted-foreground md:flex md:items-center md:gap-6 md:text-sm">
+        <nav className="grid grid-cols-2 gap-2 text-xs font-medium text-muted-foreground sm:grid-cols-4 md:flex md:items-center md:gap-5 md:text-sm">
           {navItems.map((item) => {
             const Icon = item.icon;
 
@@ -61,14 +67,23 @@ export function AppHeader() {
                 className="flex h-11 items-center justify-center gap-2 rounded-xl border border-border bg-white px-3 transition hover:border-primary-rose-soft hover:bg-primary-rose-soft/50 hover:text-primary-rose md:h-auto md:justify-start md:border-0 md:bg-transparent md:px-0 md:hover:bg-transparent md:hover:text-foreground"
               >
                 <Icon className="size-4" />
-                <span className="md:hidden">{item.label}</span>
-                <span className="hidden md:inline">{item.desktopLabel}</span>
+                <span>{item.label}</span>
               </Link>
             );
           })}
         </nav>
 
         <V2LanguageSwitcher />
+
+        <Link
+          href="/new-analysis/report"
+          className={cn(
+            buttonVariants(),
+            "h-11 rounded-xl bg-primary-rose px-5 text-white hover:bg-primary-rose-dark"
+          )}
+        >
+          {t("nav.start")}
+        </Link>
       </div>
     </header>
   );
