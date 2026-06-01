@@ -13,6 +13,7 @@ import {
 
 import { analyzeReport } from "@/services/report-intelligence-service";
 import type { ReportLanguage, ReportType } from "@/types/report-intelligence";
+import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { useTranslations } from "@/i18n/use-translations";
 import { cn } from "@/lib/utils";
@@ -114,15 +115,23 @@ export function ReportInputForm() {
         </p>
       </div>
 
-      <div className="mt-5 rounded-xl border border-dashed border-border bg-background p-4">
+      <div
+        aria-disabled="true"
+        className="mt-5 cursor-not-allowed rounded-xl border border-dashed border-border bg-muted/60 p-4 opacity-85"
+      >
         <div className="flex items-center gap-3">
-          <div className="flex size-10 items-center justify-center rounded-xl bg-primary-rose-soft text-primary-rose">
+          <div className="flex size-10 items-center justify-center rounded-xl bg-muted text-muted-foreground">
             <Upload className="size-4" />
           </div>
-          <div>
-            <p className="text-sm font-semibold text-foreground">
-              {t("report.upload")}
-            </p>
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="text-sm font-semibold text-foreground">
+                {t("report.upload")}
+              </p>
+              <Badge className="rounded-full bg-primary-rose-soft px-2 py-0.5 text-primary-rose hover:bg-primary-rose-soft">
+                {t("report.upload.badgeSoon")}
+              </Badge>
+            </div>
             <p className="mt-1 text-xs leading-5 text-muted-foreground">
               {t("report.uploadSoon")}
             </p>

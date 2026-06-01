@@ -30,6 +30,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { BentoCard } from "@/components/v2/bento-card";
 import { SafetyNotice } from "@/components/v2/safety-notice";
 import { useTranslations } from "@/i18n/use-translations";
+import { sanitizeSafetyCopy } from "@/lib/safety-copy";
 import { cn } from "@/lib/utils";
 
 function valueOrFallback(value: string | null | undefined, fallback: string) {
@@ -173,14 +174,16 @@ export function ReportResultView({ id }: { id: string }) {
         ? t("result.wdbcYes")
         : t("result.wdbcNo")
       : t("common.wdbcNotEvaluated");
-  const summary = report.educationalSummary ?? t("common.summaryUnavailable");
+  const summary = sanitizeSafetyCopy(
+    report.educationalSummary ?? t("common.summaryUnavailable")
+  );
   const simpleExplanation =
-    report.simpleExplanation ?? t("common.summaryUnavailable");
+    sanitizeSafetyCopy(report.simpleExplanation ?? t("common.summaryUnavailable"));
   const importantTerms = Array.isArray(report.importantTerms)
     ? report.importantTerms
     : [];
   const safetyNotes = Array.isArray(report.safetyNotes)
-    ? report.safetyNotes
+    ? report.safetyNotes.map((note) => sanitizeSafetyCopy(note))
     : [t("result.safety")];
   const mentionedFindings = Array.isArray(findings.mentionedFindings)
     ? findings.mentionedFindings
@@ -409,7 +412,7 @@ export function ReportResultView({ id }: { id: string }) {
                     <p className="font-semibold text-foreground">{item.term}</p>
                   </div>
                   <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    {item.explanation}
+                    {sanitizeSafetyCopy(item.explanation)}
                   </p>
                 </div>
                 ))

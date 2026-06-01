@@ -5,7 +5,6 @@ import {
   BarChart3,
   BookOpenText,
   BrainCircuit,
-  CheckCircle2,
   Database,
   FileText,
   Globe2,
@@ -26,6 +25,12 @@ import { cn } from "@/lib/utils";
 
 function HeroVisual() {
   const { t } = useTranslations();
+  const pipeline = [
+    ["home.pipeline.report", "home.pipeline.report.desc", FileText, "bg-primary-rose-soft text-primary-rose"],
+    ["home.pipeline.findings", "home.pipeline.findings.desc", Layers3, "bg-accent-blue-soft text-accent-blue"],
+    ["home.pipeline.explanation", "home.pipeline.explanation.desc", BookOpenText, "bg-secondary-teal-soft text-secondary-teal-dark"],
+    ["home.pipeline.wdbc", "home.pipeline.wdbc.desc", Target, "bg-muted text-muted-foreground"],
+  ] as const;
 
   return (
     <div className="animate-slide-up relative">
@@ -36,7 +41,7 @@ function HeroVisual() {
               {t("result.done")}
             </Badge>
             <h2 className="mt-5 text-2xl font-semibold text-foreground">
-              {t("result.title")}
+              {t("home.pipeline.title")}
             </h2>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
               {t("home.feature.report.desc")}
@@ -48,39 +53,39 @@ function HeroVisual() {
           />
         </div>
 
-        <div className="mt-6 grid gap-3 sm:grid-cols-2">
-          <div className="rounded-2xl border border-secondary-teal-soft bg-secondary-teal-soft/40 p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-              {t("result.birads")}
-            </p>
-            <p className="mt-2 text-lg font-semibold text-secondary-teal-dark">
-              BI-RADS
-            </p>
-          </div>
-          <div className="rounded-2xl border border-accent-blue-soft bg-accent-blue-soft/50 p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-              {t("result.wdbc")}
-            </p>
-            <p className="mt-2 text-lg font-semibold text-accent-blue">
-              {t("result.wdbcNo")}
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-6 space-y-3">
-          {["home.card.upload", "home.card.explain", "home.card.compat"].map(
-            (key) => (
+        <div className="mt-7 space-y-3">
+          {pipeline.map(([titleKey, descKey, Icon, className], index) => (
+            <div key={titleKey} className="relative">
+              {index < pipeline.length - 1 ? (
+                <div className="absolute left-6 top-14 h-6 w-px bg-border" />
+              ) : null}
               <div
-                key={key}
-                className="flex items-center gap-3 rounded-2xl border border-border bg-background p-4"
+                className="flex items-center gap-4 rounded-2xl border border-border bg-background p-4 transition hover:-translate-y-0.5 hover:bg-white hover:shadow-sm"
               >
-                <CheckCircle2 className="size-4 shrink-0 text-secondary-teal-dark" />
-                <span className="text-sm font-medium text-foreground">
-                  {t(key)}
-                </span>
+                <div
+                  className={cn(
+                    "flex size-12 shrink-0 items-center justify-center rounded-2xl border border-white shadow-sm",
+                    className
+                  )}
+                >
+                  <Icon className="size-5" />
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="flex size-6 items-center justify-center rounded-full bg-primary-rose text-xs font-semibold text-white">
+                      {index + 1}
+                    </span>
+                    <h3 className="font-semibold text-foreground">
+                      {t(titleKey)}
+                    </h3>
+                  </div>
+                  <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                    {t(descKey)}
+                  </p>
+                </div>
               </div>
-            )
-          )}
+            </div>
+          ))}
         </div>
       </div>
     </div>
@@ -99,10 +104,10 @@ export default function Home() {
   ] as const;
 
   const cards = [
-    ["home.card.upload", FileText, "bg-primary-rose-soft text-primary-rose"],
-    ["home.card.explain", BookOpenText, "bg-secondary-teal-soft text-secondary-teal-dark"],
-    ["home.card.compat", Target, "bg-accent-blue-soft text-accent-blue"],
-    ["home.card.structured", Layers3, "bg-primary-rose-soft text-primary-rose"],
+    ["home.card.upload", "home.card.upload.desc", FileText, "bg-primary-rose-soft text-primary-rose"],
+    ["home.card.explain", "home.card.explain.desc", BookOpenText, "bg-secondary-teal-soft text-secondary-teal-dark"],
+    ["home.card.compat", "home.card.compat.desc", Target, "bg-accent-blue-soft text-accent-blue"],
+    ["home.card.structured", "home.card.structured.desc", Layers3, "bg-primary-rose-soft text-primary-rose"],
   ] as const;
 
   const trust = [
@@ -203,7 +208,7 @@ export default function Home() {
         </h2>
 
         <div className="mt-7 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-          {cards.map(([titleKey, Icon, className], index) => (
+          {cards.map(([titleKey, descKey, Icon, className], index) => (
             <V2FeatureCard
               key={titleKey}
               style={{ animationDelay: `${index * 90}ms` }}
@@ -213,7 +218,7 @@ export default function Home() {
                 {t(titleKey)}
               </h3>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                {t("home.subtitle")}
+                {t(descKey)}
               </p>
             </V2FeatureCard>
           ))}
