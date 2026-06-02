@@ -1,5 +1,9 @@
 import type { UiLocale } from "@/i18n/translations";
-import type { ReportAnalysis, ReportMeasurement } from "@/types/report-intelligence";
+import type {
+  ReportAnalysis,
+  ReportMeasurement,
+  StructuredFindings,
+} from "@/types/report-intelligence";
 import { sanitizeSafetyCopy } from "@/lib/safety-copy";
 
 export type EducationalGuideItem = {
@@ -401,7 +405,7 @@ export function buildEducationalGuide(
   locale: UiLocale
 ): EducationalGuide {
   const guideCopy = copy[locale] ?? copy["pt-BR"];
-  const findings = report.structuredFindings ?? {};
+  const findings: Partial<StructuredFindings> = report.structuredFindings ?? {};
   const measurements = Array.isArray(findings.measurements)
     ? findings.measurements
     : [];
