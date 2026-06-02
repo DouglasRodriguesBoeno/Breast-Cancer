@@ -28,6 +28,7 @@ import type {
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { BentoCard } from "@/components/v2/bento-card";
+import { EducationalGuideSection } from "@/components/v2/educational-guide-section";
 import { SafetyNotice } from "@/components/v2/safety-notice";
 import { useTranslations } from "@/i18n/use-translations";
 import { sanitizeSafetyCopy } from "@/lib/safety-copy";
@@ -177,8 +178,9 @@ export function ReportResultView({ id }: { id: string }) {
   const summary = sanitizeSafetyCopy(
     report.educationalSummary ?? t("common.summaryUnavailable")
   );
-  const simpleExplanation =
-    sanitizeSafetyCopy(report.simpleExplanation ?? t("common.summaryUnavailable"));
+  const simpleExplanation = sanitizeSafetyCopy(
+    report.simpleExplanation ?? t("common.summaryUnavailable")
+  );
   const importantTerms = Array.isArray(report.importantTerms)
     ? report.importantTerms
     : [];
@@ -241,42 +243,6 @@ export function ReportResultView({ id }: { id: string }) {
             {t("nav.new")}
           </Link>
         </div>
-
-        <div className="mt-8 grid gap-4 md:grid-cols-4">
-          {[
-            [t("result.birads"), valueOrFallback(findings.birads, t("common.notMentioned"))],
-            [
-              t("result.reportType"),
-              getReportTypeLabel(
-                report.reportType,
-                t("common.typeUnavailable"),
-                t
-              ),
-            ],
-            [
-              t("result.date"),
-              formatDate(report.createdAt) || t("common.dateUnavailable"),
-            ],
-            [
-              t("result.provider"),
-              `${valueOrFallback(report.provider, t("common.notInformed"))}${
-                report.providerModel ? ` / ${report.providerModel}` : ""
-              }`,
-            ],
-          ].map(([label, value]) => (
-            <div
-              key={label}
-              className="rounded-2xl border border-border bg-background p-4"
-            >
-              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                {label}
-              </p>
-              <p className="mt-2 text-sm font-semibold text-foreground">
-                {value}
-              </p>
-            </div>
-          ))}
-        </div>
       </section>
 
       <div className="mt-8">
@@ -295,6 +261,8 @@ export function ReportResultView({ id }: { id: string }) {
           </p>
         </BentoCard>
       </div>
+
+      <EducationalGuideSection report={report} />
 
       <div className="mt-5 grid gap-5 lg:grid-cols-[1fr_0.8fr]">
         <BentoCard className="rounded-[2rem]">
@@ -337,7 +305,7 @@ export function ReportResultView({ id }: { id: string }) {
                   <li
                     key={`${measurement.value}-${measurement.unit}-${measurement.context}`}
                   >
-                  {formatMeasurement(measurement)}
+                    {formatMeasurement(measurement)}
                   </li>
                 ))}
               </ul>
@@ -401,20 +369,20 @@ export function ReportResultView({ id }: { id: string }) {
             <div className="mt-5 space-y-3">
               {importantTerms.length > 0 ? (
                 importantTerms.map((item, index) => (
-                <div
-                  key={item.term}
-                  className="card-hover-lift rounded-2xl border border-border bg-background p-4"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="flex size-8 items-center justify-center rounded-xl bg-primary-rose-soft text-sm font-semibold text-primary-rose">
-                      {index + 1}
+                  <div
+                    key={item.term}
+                    className="card-hover-lift rounded-2xl border border-border bg-background p-4"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="flex size-8 items-center justify-center rounded-xl bg-primary-rose-soft text-sm font-semibold text-primary-rose">
+                        {index + 1}
+                      </div>
+                      <p className="font-semibold text-foreground">{item.term}</p>
                     </div>
-                    <p className="font-semibold text-foreground">{item.term}</p>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                      {sanitizeSafetyCopy(item.explanation)}
+                    </p>
                   </div>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    {sanitizeSafetyCopy(item.explanation)}
-                  </p>
-                </div>
                 ))
               ) : (
                 <p className="rounded-2xl border border-border bg-background p-4 text-sm text-muted-foreground">
