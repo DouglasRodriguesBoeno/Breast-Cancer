@@ -98,17 +98,20 @@ export function ReportInputForm() {
       <div>
         <label
           htmlFor="report-text"
-          className="text-sm font-semibold text-foreground"
+          className="text-base font-semibold text-foreground"
         >
           {t("report.textLabel")}
         </label>
+        <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
+          {t("report.sparseHelper")}
+        </p>
 
         <textarea
           id="report-text"
           value={reportText}
           onChange={(event) => setReportText(event.target.value)}
           placeholder={t("report.placeholder")}
-          className="mt-3 min-h-72 w-full resize-y rounded-xl border border-border bg-white p-4 text-sm leading-6 text-foreground outline-none transition placeholder:text-muted-foreground focus:border-primary-rose focus:ring-4 focus:ring-primary-rose-soft focus:shadow-[0_0_0_6px_rgba(225,29,72,0.08)]"
+          className="mt-4 min-h-96 w-full resize-y rounded-2xl border border-border bg-white p-5 text-base leading-7 text-foreground outline-none transition placeholder:text-muted-foreground focus:border-primary-rose focus:ring-4 focus:ring-primary-rose-soft focus:shadow-[0_0_0_6px_rgba(225,29,72,0.08)]"
         />
         <p className="mt-2 text-right text-xs font-medium text-muted-foreground">
           {reportText.length.toLocaleString()} / 50.000 {t("report.count")}
@@ -139,7 +142,11 @@ export function ReportInputForm() {
         </div>
       </div>
 
-      <div className="mt-5 grid gap-4 md:grid-cols-2">
+      <div className="mt-5 rounded-2xl border border-border bg-background p-4">
+        <p className="mb-3 text-sm font-semibold text-muted-foreground">
+          {t("report.optionsLabel")}
+        </p>
+        <div className="grid gap-4 md:grid-cols-2">
         <label className="text-sm font-semibold text-foreground">
           {t("report.language")}
           <select
@@ -171,6 +178,7 @@ export function ReportInputForm() {
             ))}
           </select>
         </label>
+        </div>
       </div>
 
       <label className="mt-5 flex gap-3 rounded-xl border border-border bg-background p-4 text-sm leading-6 text-muted-foreground">
@@ -194,7 +202,7 @@ export function ReportInputForm() {
         <div className="mt-5 flex gap-3 rounded-xl border border-secondary-teal-soft bg-secondary-teal-soft p-4 text-sm leading-6 text-secondary-teal-dark">
           <CheckCircle2 className="mt-0.5 size-4 shrink-0" />
           <span>
-            {t("mode.report.b3")}
+            {t("report.readyHint")}
           </span>
         </div>
       )}

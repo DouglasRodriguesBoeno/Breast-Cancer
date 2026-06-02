@@ -1,10 +1,10 @@
 const safetyCopyReplacements = [
   {
-    pattern: /provavelmente\s+n[aã]o\s+(?:é\s+)?perigoso/gi,
+    pattern: /provavelmente\s+n(?:a|ã|Ã£)o\s+(?:(?:é|Ã©)\s+)?perigoso/gi,
     replacement: "descrito de forma educacional no texto do laudo",
   },
   {
-    pattern: /n[aã]o\s+(?:é\s+)?perigoso/gi,
+    pattern: /n(?:a|ã|Ã£)o\s+(?:(?:é|Ã©)\s+)?perigoso/gi,
     replacement: "descrito de forma educacional no texto do laudo",
   },
   {

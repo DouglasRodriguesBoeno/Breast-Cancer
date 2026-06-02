@@ -6,12 +6,8 @@ import {
   AlertTriangle,
   BookOpenText,
   Brain,
-  Clock3,
-  Download,
   FileText,
-  Languages,
   ListChecks,
-  Save,
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
@@ -193,11 +189,19 @@ export function ReportResultView({ id }: { id: string }) {
   )
     ? findings.mentionedRecommendations
     : [];
+  const missingFieldFallback = t("result.emptyField");
+  const suggestedQuestions = [
+    "result.sparse.q1",
+    "result.sparse.q2",
+    "result.sparse.q3",
+    "result.sparse.q4",
+    "result.sparse.q5",
+  ];
 
   return (
     <div className="animate-fade-in">
-      <section className="rounded-[2rem] border border-border bg-white p-6 shadow-sm md:p-8 lg:p-10">
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+      <section className="rounded-[2rem] border border-border bg-white p-6 shadow-sm md:p-8">
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <div className="flex flex-wrap gap-2">
               <Badge className="rounded-full bg-secondary-teal-soft px-3 py-1 text-secondary-teal-dark hover:bg-secondary-teal-soft">
@@ -226,8 +230,8 @@ export function ReportResultView({ id }: { id: string }) {
               {t("result.title")}
             </h1>
 
-            <p className="mt-5 max-w-3xl text-lg leading-8 text-muted-foreground">
-              {summary}
+            <p className="mt-4 max-w-3xl text-base leading-7 text-muted-foreground">
+              {t("result.heroIntro")}
             </p>
           </div>
 
@@ -241,46 +245,10 @@ export function ReportResultView({ id }: { id: string }) {
             {t("nav.new")}
           </Link>
         </div>
-
-        <div className="mt-8 grid gap-4 md:grid-cols-4">
-          {[
-            [t("result.birads"), valueOrFallback(findings.birads, t("common.notMentioned"))],
-            [
-              t("result.reportType"),
-              getReportTypeLabel(
-                report.reportType,
-                t("common.typeUnavailable"),
-                t
-              ),
-            ],
-            [
-              t("result.date"),
-              formatDate(report.createdAt) || t("common.dateUnavailable"),
-            ],
-            [
-              t("result.provider"),
-              `${valueOrFallback(report.provider, t("common.notInformed"))}${
-                report.providerModel ? ` / ${report.providerModel}` : ""
-              }`,
-            ],
-          ].map(([label, value]) => (
-            <div
-              key={label}
-              className="rounded-2xl border border-border bg-background p-4"
-            >
-              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                {label}
-              </p>
-              <p className="mt-2 text-sm font-semibold text-foreground">
-                {value}
-              </p>
-            </div>
-          ))}
-        </div>
       </section>
 
       <div className="mt-8">
-        <BentoCard className="rounded-[2rem] p-7 md:p-9">
+        <BentoCard className="rounded-[2rem] border-accent-blue-soft p-7 shadow-[0_18px_50px_rgba(37,99,235,0.08)] md:p-9">
           <div className="flex items-center gap-3">
             <div className="flex size-11 items-center justify-center rounded-xl bg-accent-blue-soft text-accent-blue">
               <BookOpenText className="size-5" />
@@ -296,6 +264,22 @@ export function ReportResultView({ id }: { id: string }) {
         </BentoCard>
       </div>
 
+      <div className="mt-5">
+        <BentoCard className="rounded-[2rem] p-6">
+          <div className="flex items-center gap-3">
+            <div className="flex size-10 items-center justify-center rounded-xl bg-secondary-teal-soft text-secondary-teal-dark">
+              <Sparkles className="size-5" />
+            </div>
+            <h2 className="text-2xl font-semibold text-foreground">
+              {t("result.summary")}
+            </h2>
+          </div>
+          <p className="mt-5 text-base leading-7 text-muted-foreground">
+            {summary}
+          </p>
+        </BentoCard>
+      </div>
+
       <div className="mt-5 grid gap-5 lg:grid-cols-[1fr_0.8fr]">
         <BentoCard className="rounded-[2rem]">
           <div className="flex items-center gap-3">
@@ -303,15 +287,15 @@ export function ReportResultView({ id }: { id: string }) {
               <ListChecks className="size-5" />
             </div>
             <h2 className="text-2xl font-semibold text-foreground">
-              {t("result.mentioned")}
+              {t("result.identified")}
             </h2>
           </div>
 
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
             {[
-              [t("result.birads"), valueOrFallback(findings.birads, t("common.notMentioned"))],
-              [t("result.breastSide"), valueOrFallback(findings.breastSide, t("common.notMentioned"))],
-              [t("result.location"), valueOrFallback(findings.location, t("common.notMentioned"))],
+              [t("result.birads"), valueOrFallback(findings.birads, missingFieldFallback)],
+              [t("result.breastSide"), valueOrFallback(findings.breastSide, missingFieldFallback)],
+              [t("result.location"), valueOrFallback(findings.location, missingFieldFallback)],
             ].map(([label, value]) => (
               <div
                 key={label}
@@ -343,7 +327,7 @@ export function ReportResultView({ id }: { id: string }) {
               </ul>
             ) : (
               <p className="mt-2 text-sm text-muted-foreground">
-                {t("common.notMentioned")}
+                {missingFieldFallback}
               </p>
             )}
           </div>
@@ -367,7 +351,7 @@ export function ReportResultView({ id }: { id: string }) {
                     </li>
                   ))
                 ) : (
-                  <li>{t("common.notMentioned")}</li>
+                  <li>{missingFieldFallback}</li>
                 )}
               </ul>
             </div>
@@ -382,7 +366,7 @@ export function ReportResultView({ id }: { id: string }) {
                     <li key={item}>{item}</li>
                   ))
                 ) : (
-                  <li>{t("common.notMentioned")}</li>
+                  <li>{missingFieldFallback}</li>
                 )}
               </ul>
             </div>
@@ -418,18 +402,25 @@ export function ReportResultView({ id }: { id: string }) {
                 ))
               ) : (
                 <p className="rounded-2xl border border-border bg-background p-4 text-sm text-muted-foreground">
-                  {t("common.notMentioned")}
+                  {missingFieldFallback}
                 </p>
               )}
             </div>
           </BentoCard>
 
-          <BentoCard className="rounded-[2rem]">
+          <BentoCard className="rounded-[2rem] border-border bg-background/70">
             <div className="flex items-center gap-3">
-              <FileText className="size-5 text-accent-blue" />
-              <h2 className="text-xl font-semibold text-foreground">
+              <div className="flex size-10 items-center justify-center rounded-xl bg-accent-blue-soft text-accent-blue">
+                <FileText className="size-5" />
+              </div>
+              <div>
+              <h2 className="text-lg font-semibold text-foreground">
                 {t("result.wdbc")}
               </h2>
+              <p className="mt-1 text-xs font-medium text-muted-foreground">
+                {t("result.wdbcAdvanced")}
+              </p>
+              </div>
             </div>
 
             <div className="mt-5 rounded-xl border border-border bg-background p-4 text-sm leading-6 text-muted-foreground">
@@ -438,7 +429,7 @@ export function ReportResultView({ id }: { id: string }) {
               </p>
               <p className="mt-2">
                 {canRunPrediction
-                  ? wdbcCompatibility.reason ?? t("common.notInformed")
+                  ? sanitizeSafetyCopy(wdbcCompatibility.reason) || t("common.notInformed")
                   : t("result.wdbcMissing")}
               </p>
               <p className="mt-3">
@@ -466,12 +457,35 @@ export function ReportResultView({ id }: { id: string }) {
         </div>
       </div>
 
+      <div className="mt-5">
+        <BentoCard className="rounded-[2rem] border-accent-blue-soft bg-accent-blue-soft/25">
+          <div className="flex items-center gap-3">
+            <div className="flex size-10 items-center justify-center rounded-xl bg-white text-accent-blue">
+              <ListChecks className="size-5" />
+            </div>
+            <h2 className="text-xl font-semibold text-foreground">
+              {t("result.sparseTitle")}
+            </h2>
+          </div>
+          <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+            {suggestedQuestions.map((question) => (
+              <div
+                key={question}
+                className="rounded-2xl border border-border bg-white p-4 text-sm font-medium leading-6 text-foreground"
+              >
+                {t(question)}
+              </div>
+            ))}
+          </div>
+        </BentoCard>
+      </div>
+
       <div className="mt-5 grid gap-5 lg:grid-cols-2">
         <BentoCard className="rounded-[2rem]">
           <div className="flex items-center gap-3">
             <Brain className="size-5 text-primary-rose" />
             <h2 className="text-xl font-semibold text-foreground">
-              {t("result.provider")}
+              {t("result.metadata")}
             </h2>
           </div>
 
@@ -490,6 +504,26 @@ export function ReportResultView({ id }: { id: string }) {
               </p>
               <p className="mt-1 text-sm font-medium text-foreground">
                 {valueOrFallback(report.providerModel, t("common.notInformed"))}
+              </p>
+            </div>
+            <div className="rounded-xl border border-border bg-background p-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                {t("result.date")}
+              </p>
+              <p className="mt-1 text-sm font-medium text-foreground">
+                {formatDate(report.createdAt) || t("common.dateUnavailable")}
+              </p>
+            </div>
+            <div className="rounded-xl border border-border bg-background p-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                {t("result.reportType")}
+              </p>
+              <p className="mt-1 text-sm font-medium text-foreground">
+                {getReportTypeLabel(
+                  report.reportType,
+                  t("common.typeUnavailable"),
+                  t
+                )}
               </p>
             </div>
           </div>
@@ -513,24 +547,6 @@ export function ReportResultView({ id }: { id: string }) {
 
       <div className="mt-5">
         <SafetyNotice />
-      </div>
-
-      <div className="mt-5 grid gap-3 md:grid-cols-4">
-        {[
-          [t("result.actions.save"), Save],
-          [t("result.actions.export"), Download],
-          [t("result.actions.translate"), Languages],
-          [t("result.actions.history"), Clock3],
-        ].map(([label, Icon]) => (
-          <button
-            key={label as string}
-            type="button"
-            className="card-hover-lift flex h-12 items-center justify-center gap-2 rounded-xl border border-border bg-white px-4 text-sm font-semibold text-foreground"
-          >
-            <Icon className="size-4 text-accent-blue" />
-            {label as string}
-          </button>
-        ))}
       </div>
     </div>
   );

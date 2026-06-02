@@ -22,8 +22,6 @@ export default function ReportInputPage() {
     "report.receive.1",
     "report.receive.2",
     "report.receive.3",
-    "report.receive.4",
-    "report.receive.5",
   ];
 
   return (
@@ -52,7 +50,7 @@ export default function ReportInputPage() {
           </p>
         </div>
 
-        <div className="mt-8 grid gap-6 rounded-[2rem] border border-border bg-white p-5 shadow-[0_24px_80px_rgba(15,23,42,0.08)] lg:grid-cols-[1fr_0.38fr] lg:p-7">
+        <div className="mt-8 grid gap-6 rounded-[2rem] border border-border bg-white p-4 shadow-[0_24px_80px_rgba(15,23,42,0.08)] lg:grid-cols-[minmax(0,1fr)_20rem] lg:p-6">
           <div className="animate-slide-up">
             <ReportInputForm />
           </div>
@@ -77,6 +75,15 @@ export default function ReportInputPage() {
               ))}
             </ul>
           </BentoCard>
+
+            <BentoCard className="rounded-2xl border-accent-blue-soft bg-accent-blue-soft/30">
+              <div className="flex gap-3">
+                <FileText className="mt-0.5 size-5 shrink-0 text-accent-blue" />
+                <p className="text-sm leading-6 text-muted-foreground">
+                  {t("report.sparseHelper")}
+                </p>
+              </div>
+            </BentoCard>
 
             <BentoCard className="rounded-2xl border-secondary-teal-soft bg-secondary-teal-soft/30">
               <div className="flex gap-3">
