@@ -54,7 +54,7 @@ type GuideCopy = {
     recommendations: string;
     comparison: string;
   };
-  cannotConclude: string[];
+  cannotConclude: EducationalGuideItem[];
   questions: {
     birads: string;
     size: string;
@@ -117,45 +117,55 @@ const copy: Record<UiLocale, GuideCopy> = {
     prevention: [
       {
         title: "Manter peso saudável",
-        description: "Hábitos de saúde podem contribuir para redução geral de risco ao longo da vida.",
+        description:
+          "Hábitos de saúde podem contribuir para redução geral de risco ao longo da vida.",
       },
       {
         title: "Praticar atividade física",
-        description: "Movimento regular é uma medida geral de saúde associada à redução de risco.",
+        description:
+          "Movimento regular é uma medida geral de saúde associada à redução de risco.",
       },
       {
         title: "Evitar ou limitar álcool",
-        description: "O consumo de álcool é um fator de risco modificável descrito em orientações de saúde pública.",
+        description:
+          "O consumo de álcool é um fator de risco modificável descrito em orientações de saúde pública.",
       },
       {
         title: "Conhecer histórico familiar",
-        description: "Histórico familiar pode indicar necessidade de conversa mais direcionada com profissional de saúde.",
+        description:
+          "Histórico familiar pode indicar necessidade de conversa mais direcionada com profissional de saúde.",
       },
       {
         title: "Manter rastreamento orientado",
-        description: "Mamografia e acompanhamento devem seguir idade, histórico e orientação profissional.",
+        description:
+          "Mamografia e acompanhamento devem seguir idade, histórico e orientação profissional.",
       },
     ],
     glossary: [
       {
         title: "BI-RADS",
-        description: "Sistema usado em laudos de imagem da mama para padronizar categorias e acompanhamento.",
+        description:
+          "Sistema usado em laudos de imagem da mama para padronizar categorias e acompanhamento.",
       },
       {
         title: "Nódulo",
-        description: "Achado localizado na mama. Seu significado depende de tamanho, margens, imagem e avaliação profissional.",
+        description:
+          "Achado localizado na mama. Seu significado depende de tamanho, margens, imagem e avaliação profissional.",
       },
       {
         title: "Margens",
-        description: "Descrevem o contorno do achado no exame, como circunscrito, indistinto ou irregular.",
+        description:
+          "Descrevem o contorno do achado no exame, como circunscrito, indistinto ou irregular.",
       },
       {
         title: "Acompanhamento",
-        description: "Orientação para observar estabilidade ou mudança ao longo do tempo, conforme avaliação médica.",
+        description:
+          "Orientação para observar estabilidade ou mudança ao longo do tempo, conforme avaliação médica.",
       },
       {
         title: "WDBC",
-        description: "Modelo educacional que só pode rodar quando as 30 variáveis numéricas específicas estão presentes.",
+        description:
+          "Modelo educacional que só pode rodar quando as 30 variáveis numéricas específicas estão presentes.",
       },
     ],
   },
@@ -200,10 +210,13 @@ const copy: Record<UiLocale, GuideCopy> = {
     questions: {
       birads: "Does the report mention a BI-RADS category?",
       size: "What is the size of the nodule or finding?",
-      margins: "Were the margins described as circumscribed, indistinct or irregular?",
-      recommendations: "Does the exam recommend follow-up, comparison or another exam?",
+      margins:
+        "Were the margins described as circumscribed, indistinct or irregular?",
+      recommendations:
+        "Does the exam recommend follow-up, comparison or another exam?",
       comparison: "Is there a comparison with previous exams?",
-      examType: "Was the finding described in mammography, ultrasound, MRI or biopsy?",
+      examType:
+        "Was the finding described in mammography, ultrasound, MRI or biopsy?",
     },
     prevention: [
       {
@@ -212,41 +225,50 @@ const copy: Record<UiLocale, GuideCopy> = {
       },
       {
         title: "Practice physical activity",
-        description: "Regular movement is a general health measure associated with risk reduction.",
+        description:
+          "Regular movement is a general health measure associated with risk reduction.",
       },
       {
         title: "Avoid or limit alcohol",
-        description: "Alcohol use is a modifiable risk factor described in public health guidance.",
+        description:
+          "Alcohol use is a modifiable risk factor described in public health guidance.",
       },
       {
         title: "Know family history",
-        description: "Family history may indicate the need for a more specific conversation with a professional.",
+        description:
+          "Family history may indicate the need for a more specific conversation with a professional.",
       },
       {
         title: "Keep screening guidance",
-        description: "Mammography and follow-up should consider age, history and professional guidance.",
+        description:
+          "Mammography and follow-up should consider age, history and professional guidance.",
       },
     ],
     glossary: [
       {
         title: "BI-RADS",
-        description: "A breast imaging reporting system used to standardize categories and follow-up.",
+        description:
+          "A breast imaging reporting system used to standardize categories and follow-up.",
       },
       {
         title: "Nodule",
-        description: "A localized breast finding. Its meaning depends on size, margins, imaging and professional review.",
+        description:
+          "A localized breast finding. Its meaning depends on size, margins, imaging and professional review.",
       },
       {
         title: "Margins",
-        description: "They describe the contour of a finding, such as circumscribed, indistinct or irregular.",
+        description:
+          "They describe the contour of a finding, such as circumscribed, indistinct or irregular.",
       },
       {
         title: "Follow-up",
-        description: "A recommendation to observe stability or changes over time, according to medical evaluation.",
+        description:
+          "A recommendation to observe stability or changes over time, according to medical evaluation.",
       },
       {
         title: "WDBC",
-        description: "An educational model that only runs when the 30 specific numerical features are available.",
+        description:
+          "An educational model that only runs when the 30 specific numerical features are available.",
       },
     ],
   },
@@ -291,53 +313,66 @@ const copy: Record<UiLocale, GuideCopy> = {
     questions: {
       birads: "¿El informe menciona una categoría BI-RADS?",
       size: "¿Cuál es el tamaño del nódulo o hallazgo?",
-      margins: "¿Los márgenes fueron descritos como circunscritos, indistintos o irregulares?",
-      recommendations: "¿El examen recomienda seguimiento, comparación u otro examen?",
+      margins:
+        "¿Los márgenes fueron descritos como circunscritos, indistintos o irregulares?",
+      recommendations:
+        "¿El examen recomienda seguimiento, comparación u otro examen?",
       comparison: "¿Existe comparación con exámenes anteriores?",
-      examType: "¿El hallazgo fue descrito en mamografía, ecografía, resonancia o biopsia?",
+      examType:
+        "¿El hallazgo fue descrito en mamografía, ecografía, resonancia o biopsia?",
     },
     prevention: [
       {
         title: "Mantener un peso saludable",
-        description: "Los hábitos generales de salud pueden contribuir a reducir el riesgo a lo largo de la vida.",
+        description:
+          "Los hábitos generales de salud pueden contribuir a reducir el riesgo a lo largo de la vida.",
       },
       {
         title: "Practicar actividad física",
-        description: "El movimiento regular es una medida general de salud asociada con reducción de riesgo.",
+        description:
+          "El movimiento regular es una medida general de salud asociada con reducción de riesgo.",
       },
       {
         title: "Evitar o limitar alcohol",
-        description: "El consumo de alcohol es un factor de riesgo modificable descrito en guías de salud pública.",
+        description:
+          "El consumo de alcohol es un factor de riesgo modificable descrito en guías de salud pública.",
       },
       {
         title: "Conocer antecedentes familiares",
-        description: "Los antecedentes familiares pueden indicar la necesidad de una conversación más específica.",
+        description:
+          "Los antecedentes familiares pueden indicar la necesidad de una conversación más específica.",
       },
       {
         title: "Mantener el rastreo indicado",
-        description: "La mamografía y el seguimiento deben considerar edad, historia y orientación profesional.",
+        description:
+          "La mamografía y el seguimiento deben considerar edad, historia y orientación profesional.",
       },
     ],
     glossary: [
       {
         title: "BI-RADS",
-        description: "Sistema usado en informes de imagen mamaria para estandarizar categorías y seguimiento.",
+        description:
+          "Sistema usado en informes de imagen mamaria para estandarizar categorías y seguimiento.",
       },
       {
         title: "Nódulo",
-        description: "Hallazgo localizado en la mama. Su significado depende de tamaño, márgenes, imagen y evaluación profesional.",
+        description:
+          "Hallazgo localizado en la mama. Su significado depende de tamaño, márgenes, imagen y evaluación profesional.",
       },
       {
         title: "Márgenes",
-        description: "Describen el contorno del hallazgo, como circunscrito, indistinto o irregular.",
+        description:
+          "Describen el contorno del hallazgo, como circunscrito, indistinto o irregular.",
       },
       {
         title: "Seguimiento",
-        description: "Orientación para observar estabilidad o cambios a lo largo del tiempo, según evaluación médica.",
+        description:
+          "Orientación para observar estabilidad o cambios a lo largo del tiempo, según evaluación médica.",
       },
       {
         title: "WDBC",
-        description: "Modelo educativo que solo puede ejecutarse cuando están presentes las 30 variables numéricas específicas.",
+        description:
+          "Modelo educativo que solo puede ejecutarse cuando están presentes las 30 variables numéricas específicas.",
       },
     ],
   },
