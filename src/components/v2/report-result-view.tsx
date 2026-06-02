@@ -24,7 +24,6 @@ import type {
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { BentoCard } from "@/components/v2/bento-card";
-import { EducationalGuideSection } from "@/components/v2/educational-guide-section";
 import { SafetyNotice } from "@/components/v2/safety-notice";
 import { useTranslations } from "@/i18n/use-translations";
 import { sanitizeSafetyCopy } from "@/lib/safety-copy";
