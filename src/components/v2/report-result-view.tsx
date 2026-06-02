@@ -192,13 +192,6 @@ export function ReportResultView({ id }: { id: string }) {
     ? findings.mentionedRecommendations
     : [];
   const missingFieldFallback = t("result.emptyField");
-  const suggestedQuestions = [
-    "result.sparse.q1",
-    "result.sparse.q2",
-    "result.sparse.q3",
-    "result.sparse.q4",
-    "result.sparse.q5",
-  ];
 
   return (
     <div className="animate-fade-in">
@@ -281,6 +274,8 @@ export function ReportResultView({ id }: { id: string }) {
           </p>
         </BentoCard>
       </div>
+
+      <EducationalGuideSection report={report} />
 
       <div className="mt-5 grid gap-5 lg:grid-cols-[1fr_0.8fr]">
         <BentoCard className="rounded-[2rem]">
@@ -416,12 +411,12 @@ export function ReportResultView({ id }: { id: string }) {
                 <FileText className="size-5" />
               </div>
               <div>
-              <h2 className="text-lg font-semibold text-foreground">
-                {t("result.wdbc")}
-              </h2>
-              <p className="mt-1 text-xs font-medium text-muted-foreground">
-                {t("result.wdbcAdvanced")}
-              </p>
+                <h2 className="text-lg font-semibold text-foreground">
+                  {t("result.wdbc")}
+                </h2>
+                <p className="mt-1 text-xs font-medium text-muted-foreground">
+                  {t("result.wdbcAdvanced")}
+                </p>
               </div>
             </div>
 
@@ -457,29 +452,6 @@ export function ReportResultView({ id }: { id: string }) {
             </div>
           </BentoCard>
         </div>
-      </div>
-
-      <div className="mt-5">
-        <BentoCard className="rounded-[2rem] border-accent-blue-soft bg-accent-blue-soft/25">
-          <div className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-white text-accent-blue">
-              <ListChecks className="size-5" />
-            </div>
-            <h2 className="text-xl font-semibold text-foreground">
-              {t("result.sparseTitle")}
-            </h2>
-          </div>
-          <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-5">
-            {suggestedQuestions.map((question) => (
-              <div
-                key={question}
-                className="rounded-2xl border border-border bg-white p-4 text-sm font-medium leading-6 text-foreground"
-              >
-                {t(question)}
-              </div>
-            ))}
-          </div>
-        </BentoCard>
       </div>
 
       <div className="mt-5 grid gap-5 lg:grid-cols-2">
