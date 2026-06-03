@@ -22,6 +22,7 @@ import {
   predictionSamples,
   type PredictionSampleId,
 } from "@/data/prediction-samples";
+import { useTranslations } from "@/i18n/use-translations";
 import { createPrediction } from "@/services/prediction-service";
 import type { PredictionFeatures } from "@/types/prediction";
 import {
@@ -42,9 +43,9 @@ import { cn } from "@/lib/utils";
 
 type Scenario = {
   id: PredictionSampleId;
-  title: string;
-  description: string;
-  badge: string;
+  titleKey: string;
+  descriptionKey: string;
+  badgeKey: string;
   probability: string;
   icon: LucideIcon;
   iconClassName: string;
@@ -52,41 +53,42 @@ type Scenario = {
 };
 
 type FeatureGroup = {
-  title: string;
-  description: string;
+  id: string;
+  titleKey: string;
+  descriptionKey: string;
   features: string[];
 };
 
 type Step = {
   id: number;
-  title: string;
-  description: string;
+  titleKey: string;
+  descriptionKey: string;
   icon: LucideIcon;
 };
 
 const steps: Step[] = [
   {
     id: 0,
-    title: "Sample",
-    description: "Choose a base scenario",
+    titleKey: "scenario.steps.sample.title",
+    descriptionKey: "scenario.steps.sample.description",
     icon: HeartPulse,
   },
   {
     id: 1,
-    title: "Review",
-    description: "Check key values",
+    titleKey: "scenario.steps.review.title",
+    descriptionKey: "scenario.steps.review.description",
     icon: Eye,
   },
   {
     id: 2,
-    title: "Features",
-    description: "Edit advanced inputs",
+    titleKey: "scenario.steps.features.title",
+    descriptionKey: "scenario.steps.features.description",
     icon: SlidersHorizontal,
   },
   {
     id: 3,
-    title: "Run",
-    description: "Create prediction",
+    titleKey: "scenario.steps.run.title",
+    descriptionKey: "scenario.steps.run.description",
     icon: Brain,
   },
 ];
@@ -94,10 +96,9 @@ const steps: Step[] = [
 const scenarios: Scenario[] = [
   {
     id: "benign",
-    title: "Benign sample",
-    description:
-      "Lower measurements with a pattern compatible with benign examples from the educational dataset.",
-    badge: "Low risk pattern",
+    titleKey: "scenario.samples.benign.title",
+    descriptionKey: "scenario.samples.benign.description",
+    badgeKey: "scenario.samples.benign.badge",
     probability: "12.4%",
     icon: ShieldCheck,
     iconClassName: "bg-risk-low-soft text-risk-low",
@@ -105,10 +106,9 @@ const scenarios: Scenario[] = [
   },
   {
     id: "intermediate",
-    title: "Intermediate sample",
-    description:
-      "Mixed values that help demonstrate how the model behaves close to the decision threshold.",
-    badge: "Mixed pattern",
+    titleKey: "scenario.samples.intermediate.title",
+    descriptionKey: "scenario.samples.intermediate.description",
+    badgeKey: "scenario.samples.intermediate.badge",
     probability: "41.8%",
     icon: Activity,
     iconClassName: "bg-risk-medium-soft text-risk-medium",
@@ -116,10 +116,9 @@ const scenarios: Scenario[] = [
   },
   {
     id: "malignant",
-    title: "Malignant sample",
-    description:
-      "Higher measurements with a pattern compatible with malignant examples from the educational dataset.",
-    badge: "High risk pattern",
+    titleKey: "scenario.samples.malignant.title",
+    descriptionKey: "scenario.samples.malignant.description",
+    badgeKey: "scenario.samples.malignant.badge",
     probability: "97.3%",
     icon: HeartPulse,
     iconClassName: "bg-risk-high-soft text-risk-high",
@@ -129,8 +128,9 @@ const scenarios: Scenario[] = [
 
 const featureGroups: FeatureGroup[] = [
   {
-    title: "Mean features",
-    description: "Average values extracted from the cell nuclei measurements.",
+    id: "mean",
+    titleKey: "scenario.featureGroups.mean.title",
+    descriptionKey: "scenario.featureGroups.mean.description",
     features: [
       "radius_mean",
       "texture_mean",
@@ -145,8 +145,9 @@ const featureGroups: FeatureGroup[] = [
     ],
   },
   {
-    title: "Standard error features",
-    description: "Variation measurements related to each nucleus characteristic.",
+    id: "se",
+    titleKey: "scenario.featureGroups.se.title",
+    descriptionKey: "scenario.featureGroups.se.description",
     features: [
       "radius_se",
       "texture_se",
@@ -161,8 +162,9 @@ const featureGroups: FeatureGroup[] = [
     ],
   },
   {
-    title: "Worst features",
-    description: "Largest or most severe values observed for each characteristic.",
+    id: "worst",
+    titleKey: "scenario.featureGroups.worst.title",
+    descriptionKey: "scenario.featureGroups.worst.description",
     features: [
       "radius_worst",
       "texture_worst",
@@ -215,6 +217,7 @@ function formatFeatureLabel(feature: string) {
 
 export function ScenarioSelector() {
   const router = useRouter();
+  const { t } = useTranslations();
 
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedScenario, setSelectedScenario] =
@@ -275,7 +278,7 @@ export function ScenarioSelector() {
 
     if (currentStep === 2 && invalidFeatures.length > 0) {
       setErrorMessage(
-        `Please review the following numeric fields: ${invalidFeatures
+        `${t("scenario.error.reviewFields")} ${invalidFeatures
           .slice(0, 5)
           .join(", ")}${invalidFeatures.length > 5 ? "..." : ""}`
       );
@@ -294,7 +297,7 @@ export function ScenarioSelector() {
 
       if (invalid.length > 0) {
         setErrorMessage(
-          `Please review the following numeric fields: ${invalid
+          `${t("scenario.error.reviewFields")} ${invalid
             .slice(0, 5)
             .join(", ")}${invalid.length > 5 ? "..." : ""}`
         );
@@ -311,7 +314,7 @@ export function ScenarioSelector() {
       setErrorMessage(
         error instanceof Error
           ? error.message
-          : "Unable to run the selected analysis."
+          : t("scenario.error.run")
       );
     } finally {
       setIsSubmitting(false);
@@ -358,10 +361,10 @@ export function ScenarioSelector() {
 
                     <div>
                       <p className="text-sm font-semibold text-foreground">
-                        {step.title}
+                        {t(step.titleKey)}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {step.description}
+                        {t(step.descriptionKey)}
                       </p>
                     </div>
                   </div>
@@ -410,22 +413,22 @@ export function ScenarioSelector() {
                     </div>
 
                     <CardTitle className="mt-4 text-xl font-semibold">
-                      {scenario.title}
+                      {t(scenario.titleKey)}
                     </CardTitle>
                   </CardHeader>
 
                   <CardContent className="px-5 pb-5">
                     <Badge className="rounded-xl bg-muted px-3 py-1 text-muted-foreground hover:bg-muted">
-                      {scenario.badge}
+                      {t(scenario.badgeKey)}
                     </Badge>
 
                     <p className="mt-4 text-sm leading-6 text-muted-foreground">
-                      {scenario.description}
+                      {t(scenario.descriptionKey)}
                     </p>
 
                     <div className="mt-6 rounded-2xl bg-muted p-4">
                       <p className="text-xs font-medium text-muted-foreground">
-                        Preview malignant probability
+                        {t("scenario.previewProbability")}
                       </p>
                       <p className="mt-1 text-2xl font-semibold text-foreground">
                         {scenario.probability}
@@ -444,27 +447,26 @@ export function ScenarioSelector() {
           <CardHeader className="px-6 pt-6">
             <CardTitle className="flex items-center gap-3 text-2xl">
               <ListChecks className="size-6 text-primary-rose" />
-              Review selected sample
+              {t("scenario.review.title")}
             </CardTitle>
 
             <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
-              This step summarizes the selected sample and the most relevant
-              values before opening the complete advanced editor.
+              {t("scenario.review.description")}
             </p>
           </CardHeader>
 
           <CardContent className="px-6 pb-6">
             <div className="mb-6 rounded-3xl bg-muted p-5">
               <Badge className="rounded-xl bg-primary-rose-soft px-3 py-1 text-primary-rose hover:bg-primary-rose-soft">
-                {selected.badge}
+                {t(selected.badgeKey)}
               </Badge>
 
               <h3 className="mt-4 text-2xl font-semibold text-foreground">
-                {selected.title}
+                {t(selected.titleKey)}
               </h3>
 
               <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                {selected.description}
+                {t(selected.descriptionKey)}
               </p>
             </div>
 
@@ -492,19 +494,17 @@ export function ScenarioSelector() {
               <div>
                 <CardTitle className="flex items-center gap-3 text-2xl">
                   <SlidersHorizontal className="size-6 text-primary-rose" />
-                  Advanced feature editor
+                  {t("scenario.editor.title")}
                 </CardTitle>
 
                 <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
-                  Edit the 30 numeric features used by the model. Values are
-                  grouped using the WDBC structure: mean, standard error and
-                  worst measurements.
+                  {t("scenario.editor.description")}
                 </p>
               </div>
 
               <div className="flex flex-col gap-3 sm:flex-row">
                 <div className="rounded-2xl bg-muted px-4 py-3 text-sm font-medium text-muted-foreground">
-                  {filledFeatureCount}/30 valid fields
+                  {filledFeatureCount}/30 {t("scenario.editor.validFields")}
                 </div>
 
                 <Button
@@ -514,7 +514,7 @@ export function ScenarioSelector() {
                   className="h-11 rounded-2xl border-border bg-white px-4"
                 >
                   <RotateCcw className="mr-2 size-4" />
-                  Reset sample
+                  {t("scenario.editor.reset")}
                 </Button>
               </div>
             </div>
@@ -523,12 +523,12 @@ export function ScenarioSelector() {
           <CardContent className="px-6 pb-6">
             <Accordion className="rounded-3xl border border-border bg-white/70 px-4">
               {featureGroups.map((group) => (
-                <AccordionItem key={group.title} value={group.title}>
-                  <AccordionTrigger>{group.title}</AccordionTrigger>
+                <AccordionItem key={group.id} value={group.id}>
+                  <AccordionTrigger>{t(group.titleKey)}</AccordionTrigger>
 
                   <AccordionContent>
                     <p className="mb-5 text-sm leading-6 text-muted-foreground">
-                      {group.description}
+                      {t(group.descriptionKey)}
                     </p>
 
                     <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -558,7 +558,7 @@ export function ScenarioSelector() {
 
                             {hasError ? (
                               <span className="mt-1 block text-xs font-medium text-risk-high">
-                                Enter a valid number.
+                                {t("scenario.editor.invalidNumber")}
                               </span>
                             ) : null}
                           </label>
@@ -573,9 +573,7 @@ export function ScenarioSelector() {
             <div className="mt-6 flex items-start gap-3 rounded-3xl border border-secondary-teal-soft bg-secondary-teal-soft/35 p-5 text-sm leading-6 text-muted-foreground">
               <Calculator className="mt-0.5 size-5 shrink-0 text-secondary-teal-dark" />
               <p>
-                These values are sent as a structured feature payload to the
-                Spring Boot API. The backend calls the ML service, persists the
-                result and returns the analysis identifier.
+                {t("scenario.editor.payloadNote")}
               </p>
             </div>
           </CardContent>
@@ -588,17 +586,15 @@ export function ScenarioSelector() {
             <div className="grid gap-6 lg:grid-cols-[1fr_0.8fr] lg:items-center">
               <div>
                 <Badge className="rounded-xl bg-primary-rose-soft px-3 py-1 text-primary-rose hover:bg-primary-rose-soft">
-                  Ready to run
+                  {t("scenario.run.badge")}
                 </Badge>
 
                 <h3 className="mt-4 text-3xl font-semibold text-foreground">
-                  Create prediction from {selected.title}
+                  {t("scenario.run.title")} {t(selected.titleKey)}
                 </h3>
 
                 <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-                  The analysis will be sent to the Spring Boot API, processed by
-                  the ML service and persisted in the database. After creation,
-                  you will be redirected to the result detail page.
+                  {t("scenario.run.description")}
                 </p>
 
                 {errorMessage ? (
@@ -611,7 +607,7 @@ export function ScenarioSelector() {
               <div className="rounded-3xl bg-muted p-5">
                 <div className="flex items-center justify-between gap-4">
                   <span className="text-sm font-medium text-muted-foreground">
-                    Valid features
+                    {t("scenario.run.validFeatures")}
                   </span>
                   <span className="text-2xl font-semibold text-foreground">
                     {filledFeatureCount}/30
@@ -620,7 +616,7 @@ export function ScenarioSelector() {
 
                 <div className="mt-4 flex items-center justify-between gap-4">
                   <span className="text-sm font-medium text-muted-foreground">
-                    Preview probability
+                    {t("scenario.previewProbability")}
                   </span>
                   <span className="text-2xl font-semibold text-primary-rose">
                     {selected.probability}
@@ -634,7 +630,7 @@ export function ScenarioSelector() {
                   className="mt-6 h-14 w-full rounded-2xl bg-primary-rose px-8 text-base font-semibold text-white shadow-lg shadow-primary-rose/20 hover:bg-primary-rose-dark disabled:cursor-not-allowed disabled:opacity-70"
                 >
                   <Brain className="mr-2 size-5" />
-                  {isSubmitting ? "Running analysis..." : "Run analysis"}
+                  {isSubmitting ? t("scenario.run.running") : t("scenario.run.cta")}
                 </Button>
               </div>
             </div>
@@ -657,7 +653,7 @@ export function ScenarioSelector() {
           className="h-12 rounded-2xl border-border bg-white px-6 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <ArrowLeft className="mr-2 size-4" />
-          Back
+          {t("scenario.nav.back")}
         </Button>
 
         {!isLastStep ? (
@@ -667,7 +663,7 @@ export function ScenarioSelector() {
             onClick={handleGoNext}
             className="h-12 rounded-2xl bg-primary-rose px-6 text-white hover:bg-primary-rose-dark"
           >
-            Continue
+            {t("scenario.nav.continue")}
             <ArrowRight className="ml-2 size-4" />
           </Button>
         ) : null}

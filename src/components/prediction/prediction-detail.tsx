@@ -17,6 +17,7 @@ import {
   Sparkles,
 } from "lucide-react";
 
+import { useTranslations } from "@/i18n/use-translations";
 import { getPredictionById } from "@/services/prediction-service";
 import type { PredictionResponse } from "@/types/prediction";
 import { Badge } from "@/components/ui/badge";
@@ -37,8 +38,8 @@ function formatPercent(value: number) {
   return `${toPercent(value).toFixed(1)}%`;
 }
 
-function formatDate(value: string) {
-  return new Date(value).toLocaleString("en-US", {
+function formatDate(value: string, locale: string) {
+  return new Date(value).toLocaleString(locale, {
     dateStyle: "medium",
     timeStyle: "short",
   });
@@ -62,18 +63,46 @@ function getRiskClassName(riskBand: string) {
   return "bg-risk-low-soft text-risk-low";
 }
 
-function getRiskDescription(riskBand: string) {
+function getRiskDescriptionKey(riskBand: string) {
   const normalized = riskBand.toLowerCase();
 
   if (normalized.includes("high") || normalized.includes("alto")) {
-    return "The model output is above the malignant threshold and is more compatible with a malignant pattern.";
+    return "prediction.risk.high";
   }
 
   if (normalized.includes("medium") || normalized.includes("intermediate")) {
-    return "The model output is close to the decision region and should be interpreted with extra caution.";
+    return "prediction.risk.medium";
   }
 
-  return "The model output is below the malignant threshold and is more compatible with a benign pattern.";
+  return "prediction.risk.low";
+}
+
+function getRiskBandKey(riskBand: string) {
+  const normalized = riskBand.toLowerCase();
+
+  if (normalized.includes("high") || normalized.includes("alto")) {
+    return "prediction.riskBand.high";
+  }
+
+  if (normalized.includes("medium") || normalized.includes("intermediate")) {
+    return "prediction.riskBand.medium";
+  }
+
+  return "prediction.riskBand.low";
+}
+
+function getPatternKey(label: string) {
+  const normalized = label.toLowerCase();
+
+  if (normalized.includes("malignant") || normalized.includes("maligno")) {
+    return "prediction.pattern.malignant";
+  }
+
+  if (normalized.includes("benign") || normalized.includes("benigno")) {
+    return "prediction.pattern.benign";
+  }
+
+  return "prediction.pattern.dataset";
 }
 
 function MetricCard({
@@ -177,6 +206,7 @@ function FeatureListCard({
 }
 
 export function PredictionDetail({ id }: { id: string }) {
+  const { locale, t } = useTranslations();
   const [prediction, setPrediction] = useState<PredictionResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -193,7 +223,7 @@ export function PredictionDetail({ id }: { id: string }) {
         setErrorMessage(
           error instanceof Error
             ? error.message
-            : "Unable to load prediction detail."
+            : t("prediction.error.loadDetail")
         );
       } finally {
         setIsLoading(false);
@@ -223,7 +253,7 @@ export function PredictionDetail({ id }: { id: string }) {
     return (
       <Card className="rounded-3xl border-border bg-card/95 p-8 shadow-sm">
         <p className="text-sm font-medium text-muted-foreground">
-          Loading prediction detail...
+          {t("prediction.loading")}
         </p>
       </Card>
     );
@@ -237,7 +267,7 @@ export function PredictionDetail({ id }: { id: string }) {
 
           <div>
             <h2 className="text-xl font-semibold text-risk-high">
-              Unable to load analysis
+              {t("prediction.error.title")}
             </h2>
 
             <p className="mt-2 text-sm leading-6 text-risk-high">
@@ -262,11 +292,12 @@ export function PredictionDetail({ id }: { id: string }) {
                     getRiskClassName(prediction.risk_band)
                   )}
                 >
-                  {prediction.risk_band}
+                  {t(getRiskBandKey(prediction.risk_band))}
                 </Badge>
 
                 <CardTitle className="mt-5 text-3xl font-semibold tracking-tight md:text-4xl">
-                  Compatible with {prediction.predicted_label_name} pattern
+                  {t("prediction.hero.compatibleWith")}{" "}
+                  {t(getPatternKey(prediction.predicted_label_name))}
                 </CardTitle>
 
                 <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
@@ -283,7 +314,7 @@ export function PredictionDetail({ id }: { id: string }) {
           <CardContent className="px-6 pb-6">
             <div className="mt-6">
               <p className="text-sm font-medium text-muted-foreground">
-                Malignant probability
+                {t("prediction.probability.malignant")}
               </p>
 
               <p className="mt-2 text-6xl font-semibold tracking-tight text-primary-rose">
@@ -296,9 +327,13 @@ export function PredictionDetail({ id }: { id: string }) {
               />
 
               <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
-                <span>Benign: {formatPercent(prediction.probability_benign)}</span>
                 <span>
-                  Threshold: {formatPercent(prediction.used_threshold_malignant)}
+                  {t("prediction.probability.benignShort")}:{" "}
+                  {formatPercent(prediction.probability_benign)}
+                </span>
+                <span>
+                  {t("prediction.threshold.short")}:{" "}
+                  {formatPercent(prediction.used_threshold_malignant)}
                 </span>
               </div>
 
@@ -308,11 +343,11 @@ export function PredictionDetail({ id }: { id: string }) {
 
                   <div>
                     <p className="font-medium text-foreground">
-                      Threshold interpretation
+                      {t("prediction.threshold.interpretation")}
                     </p>
 
                     <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                      {getRiskDescription(prediction.risk_band)}
+                      {t(getRiskDescriptionKey(prediction.risk_band))}
                     </p>
                   </div>
                 </div>
@@ -320,7 +355,7 @@ export function PredictionDetail({ id }: { id: string }) {
                 <div className="mt-5">
                   <div className="mb-2 flex items-center justify-between text-xs font-medium text-muted-foreground">
                     <span>0%</span>
-                    <span>Decision threshold</span>
+                    <span>{t("prediction.threshold.decision")}</span>
                     <span>100%</span>
                   </div>
 
@@ -343,24 +378,24 @@ export function PredictionDetail({ id }: { id: string }) {
 
         <div className="grid gap-6">
           <MetricCard
-            label="Benign probability"
+            label={t("prediction.probability.benign")}
             value={formatPercent(prediction.probability_benign)}
-            description="Estimated probability for the benign pattern according to the model output."
+            description={t("prediction.probability.benignDescription")}
             icon={ShieldCheck}
             className="text-secondary-teal-dark"
           />
 
           <MetricCard
-            label="Decision threshold"
+            label={t("prediction.threshold.title")}
             value={formatPercent(prediction.used_threshold_malignant)}
-            description="Configured malignant threshold used to select the final predicted label."
+            description={t("prediction.threshold.description")}
             icon={Gauge}
             className="text-foreground"
           />
 
           <div className="flex items-center gap-3 rounded-3xl border border-border bg-white/75 p-5 text-sm text-muted-foreground shadow-sm">
             <Calendar className="size-5 text-primary-rose" />
-            Created at {formatDate(prediction.created_at)}
+            {t("prediction.createdAt")} {formatDate(prediction.created_at, locale)}
           </div>
         </div>
       </div>
@@ -370,20 +405,25 @@ export function PredictionDetail({ id }: { id: string }) {
           <CardHeader className="px-5 pt-5">
             <CardTitle className="flex items-center gap-3 text-xl">
               <Brain className="size-5 text-primary-rose" />
-              Model information
+              {t("prediction.modelInfo.title")}
             </CardTitle>
           </CardHeader>
 
           <CardContent className="space-y-4 px-5 pb-5 text-sm leading-6 text-muted-foreground">
             <div className="rounded-2xl bg-muted p-4">
-              <p className="font-medium text-foreground">Model type</p>
+              <p className="font-medium text-foreground">
+                {t("prediction.modelInfo.type")}
+              </p>
               <p className="mt-1 break-words">{prediction.model_type}</p>
             </div>
 
             <div className="rounded-2xl bg-muted p-4">
-              <p className="font-medium text-foreground">Predicted label</p>
+              <p className="font-medium text-foreground">
+                {t("prediction.modelInfo.label")}
+              </p>
               <p className="mt-1">
-                {prediction.predicted_label} — {prediction.predicted_label_name}
+                {prediction.predicted_label} -{" "}
+                {t(getPatternKey(prediction.predicted_label_name))}
               </p>
             </div>
           </CardContent>
@@ -393,7 +433,7 @@ export function PredictionDetail({ id }: { id: string }) {
           <CardHeader className="px-5 pt-5">
             <CardTitle className="flex items-center gap-3 text-xl">
               <CheckCircle2 className="size-5 text-secondary-teal-dark" />
-              Confidence note
+              {t("prediction.confidence.title")}
             </CardTitle>
           </CardHeader>
 
@@ -408,7 +448,7 @@ export function PredictionDetail({ id }: { id: string }) {
           <CardHeader className="px-5 pt-5">
             <CardTitle className="flex items-center gap-3 text-xl">
               <Info className="size-5 text-primary-rose" />
-              Input quality
+              {t("prediction.inputQuality.title")}
             </CardTitle>
           </CardHeader>
 
@@ -422,37 +462,37 @@ export function PredictionDetail({ id }: { id: string }) {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <FeatureListCard
-          title="Used features"
-          description="Features that were accepted and used by the model during this prediction."
+          title={t("prediction.features.used.title")}
+          description={t("prediction.features.used.description")}
           items={prediction.used_features}
-          emptyMessage="No used features were returned by the API."
+          emptyMessage={t("prediction.features.used.empty")}
           icon={ListChecks}
           variant="success"
         />
 
         <FeatureListCard
-          title="Imputed features"
-          description="Features that needed fallback or imputation before the prediction."
+          title={t("prediction.features.imputed.title")}
+          description={t("prediction.features.imputed.description")}
           items={prediction.imputed_features}
-          emptyMessage="No features were imputed for this analysis."
+          emptyMessage={t("prediction.features.imputed.empty")}
           icon={Sparkles}
           variant="default"
         />
 
         <FeatureListCard
-          title="Ignored features"
-          description="Features that were not used by the model or were ignored during preprocessing."
+          title={t("prediction.features.ignored.title")}
+          description={t("prediction.features.ignored.description")}
           items={prediction.ignored_features}
-          emptyMessage="No features were ignored for this analysis."
+          emptyMessage={t("prediction.features.ignored.empty")}
           icon={FileWarning}
           variant="warning"
         />
 
         <FeatureListCard
-          title="Warnings"
-          description="Safety or model-related warnings returned by the prediction service."
+          title={t("prediction.features.warnings.title")}
+          description={t("prediction.features.warnings.description")}
           items={prediction.warnings}
-          emptyMessage="No warnings were returned for this analysis."
+          emptyMessage={t("prediction.features.warnings.empty")}
           icon={ShieldAlert}
           variant="warning"
         />
@@ -462,7 +502,7 @@ export function PredictionDetail({ id }: { id: string }) {
         <CardHeader className="px-5 pt-5">
           <CardTitle className="flex items-center gap-3 text-xl">
             <ShieldCheck className="size-5 text-primary-rose" />
-            Educational warning
+            {t("prediction.educationalWarning.title")}
           </CardTitle>
         </CardHeader>
 

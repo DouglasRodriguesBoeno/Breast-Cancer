@@ -187,6 +187,130 @@ export const translations: Record<UiLocale, Record<string, string>> = {
     "result.wdbcNo": "Não compatível",
     "result.wdbcMissing":
       "Este laudo pode ser explicado educacionalmente, mas não contém as 30 variáveis numéricas exigidas pelo modelo WDBC.",
+    "legacyAnalysis.new.badge": "Análise guiada",
+    "legacyAnalysis.new.title": "Criar nova análise educacional",
+    "legacyAnalysis.new.subtitle":
+      "Comece por uma amostra guiada, revise as 30 variáveis do modelo e ajuste valores numéricos opcionalmente antes de executar a saída do modelo.",
+    "legacyAnalysis.new.alertTitle": "Fluxo guiado e avançado",
+    "legacyAnalysis.new.alertDescription":
+      "Os cards guiados simplificam a primeira interação, enquanto o editor avançado mantém transparência técnica para avaliação de ML e full stack.",
+    "legacyAnalysis.new.flowLabel": "Fluxo da análise",
+    "legacyAnalysis.new.flowTitle": "Amostra -> Variáveis -> Saída do modelo",
+    "legacyAnalysis.new.flowDescription":
+      "Escolha uma amostra base, personalize o payload de variáveis se necessário e envie para a API Spring Boot. O resultado é salvo e aberto na página de detalhe.",
+    "legacyAnalysis.new.safetyTitle": "Segurança educacional",
+    "legacyAnalysis.new.safetyDescription":
+      "Este fluxo demonstra integração de ML e explicabilidade. Ele não fornece diagnóstico médico e não deve ser usado para decisões de saúde.",
+    "legacyAnalysis.new.path": "Início -> Nova análise -> Detalhe do resultado",
+    "legacyAnalysis.detail.badge": "Detalhe da análise",
+    "legacyAnalysis.detail.title": "Resultado educacional do modelo",
+    "legacyAnalysis.detail.subtitle":
+      "Revise a saída do modelo, distribuição de probabilidades, limiar e interpretação educacional desta análise.",
+    "scenario.steps.sample.title": "Amostra",
+    "scenario.steps.sample.description": "Escolha um cenário base",
+    "scenario.steps.review.title": "Revisão",
+    "scenario.steps.review.description": "Confira valores-chave",
+    "scenario.steps.features.title": "Variáveis",
+    "scenario.steps.features.description": "Edite entradas avançadas",
+    "scenario.steps.run.title": "Executar",
+    "scenario.steps.run.description": "Criar saída do modelo",
+    "scenario.samples.benign.title": "Amostra de padrão benigno",
+    "scenario.samples.benign.description":
+      "Medidas menores com padrão compatível com exemplos benignos do conjunto educacional.",
+    "scenario.samples.benign.badge": "Padrão educacional baixo",
+    "scenario.samples.intermediate.title": "Amostra intermediária",
+    "scenario.samples.intermediate.description":
+      "Valores mistos que demonstram como o modelo se comporta perto do limiar de decisão.",
+    "scenario.samples.intermediate.badge": "Padrão misto",
+    "scenario.samples.malignant.title": "Amostra de padrão maligno",
+    "scenario.samples.malignant.description":
+      "Medidas maiores com padrão compatível com exemplos malignos do conjunto educacional.",
+    "scenario.samples.malignant.badge": "Padrão educacional alto",
+    "scenario.previewProbability": "Prévia da probabilidade do modelo",
+    "scenario.review.title": "Revisar amostra selecionada",
+    "scenario.review.description":
+      "Esta etapa resume a amostra selecionada e os valores mais relevantes antes de abrir o editor avançado completo.",
+    "scenario.editor.title": "Editor avançado de variáveis",
+    "scenario.editor.description":
+      "Edite as 30 variáveis numéricas usadas pelo modelo. Os valores são agrupados pela estrutura WDBC: média, erro padrão e piores medidas.",
+    "scenario.editor.validFields": "campos válidos",
+    "scenario.editor.reset": "Restaurar amostra",
+    "scenario.editor.invalidNumber": "Informe um número válido.",
+    "scenario.editor.payloadNote":
+      "Estes valores são enviados como payload estruturado de variáveis para a API Spring Boot. O backend chama o serviço de ML, salva o resultado e retorna o identificador da análise.",
+    "scenario.featureGroups.mean.title": "Variáveis médias",
+    "scenario.featureGroups.mean.description":
+      "Valores médios extraídos das medidas dos núcleos celulares.",
+    "scenario.featureGroups.se.title": "Variáveis de erro padrão",
+    "scenario.featureGroups.se.description":
+      "Medidas de variação relacionadas a cada característica do núcleo.",
+    "scenario.featureGroups.worst.title": "Piores variáveis",
+    "scenario.featureGroups.worst.description":
+      "Maiores valores observados para cada característica.",
+    "scenario.run.badge": "Pronto para executar",
+    "scenario.run.title": "Criar saída do modelo a partir de",
+    "scenario.run.description":
+      "A análise será enviada para a API Spring Boot, processada pelo serviço de ML e salva no banco de dados. Depois, você será redirecionado para a página de detalhe.",
+    "scenario.run.validFeatures": "Variáveis válidas",
+    "scenario.run.running": "Executando análise...",
+    "scenario.run.cta": "Executar análise",
+    "scenario.nav.back": "Voltar",
+    "scenario.nav.continue": "Continuar",
+    "scenario.error.reviewFields": "Revise os seguintes campos numéricos:",
+    "scenario.error.run": "Não foi possível executar a análise selecionada.",
+    "prediction.loading": "Carregando detalhe da saída do modelo...",
+    "prediction.error.title": "Não foi possível carregar a análise",
+    "prediction.error.loadDetail": "Não foi possível carregar o detalhe da saída do modelo.",
+    "prediction.hero.compatibleWith": "Compatível com",
+    "prediction.pattern.benign": "padrão benigno do conjunto educacional",
+    "prediction.pattern.malignant": "padrão maligno do conjunto educacional",
+    "prediction.pattern.dataset": "padrão do conjunto educacional",
+    "prediction.probability.malignant": "Probabilidade do padrão maligno",
+    "prediction.probability.benignShort": "Benigno",
+    "prediction.probability.benign": "Probabilidade do padrão benigno",
+    "prediction.probability.benignDescription":
+      "Probabilidade estimada para o padrão benigno segundo a saída do modelo.",
+    "prediction.threshold.short": "Limiar",
+    "prediction.threshold.title": "Limiar de decisão",
+    "prediction.threshold.description":
+      "Limiar configurado para selecionar o rótulo de padrão na saída do modelo.",
+    "prediction.threshold.interpretation": "Interpretação do limiar",
+    "prediction.threshold.decision": "Limiar de decisão",
+    "prediction.risk.low":
+      "A saída do modelo está abaixo do limiar maligno e é mais compatível com um padrão benigno do conjunto educacional.",
+    "prediction.risk.medium":
+      "A saída do modelo está próxima da região de decisão e deve ser interpretada com cautela educacional.",
+    "prediction.risk.high":
+      "A saída do modelo está acima do limiar maligno e é mais compatível com um padrão maligno do conjunto educacional.",
+    "prediction.riskBand.low": "Padrão educacional baixo",
+    "prediction.riskBand.medium": "Padrão educacional intermediário",
+    "prediction.riskBand.high": "Padrão educacional alto",
+    "prediction.createdAt": "Criado em",
+    "prediction.modelInfo.title": "Informações do modelo",
+    "prediction.modelInfo.type": "Tipo de modelo",
+    "prediction.modelInfo.label": "Rótulo do modelo",
+    "prediction.confidence.title": "Nota de confiança",
+    "prediction.inputQuality.title": "Qualidade da entrada",
+    "prediction.features.used.title": "Variáveis usadas",
+    "prediction.features.used.description":
+      "Variáveis aceitas e usadas pelo modelo nesta saída.",
+    "prediction.features.used.empty": "A API não retornou variáveis usadas.",
+    "prediction.features.imputed.title": "Variáveis imputadas",
+    "prediction.features.imputed.description":
+      "Variáveis que precisaram de fallback ou imputação antes da saída do modelo.",
+    "prediction.features.imputed.empty": "Nenhuma variável foi imputada nesta análise.",
+    "prediction.features.ignored.title": "Variáveis ignoradas",
+    "prediction.features.ignored.description":
+      "Variáveis que não foram usadas pelo modelo ou foram ignoradas no pré-processamento.",
+    "prediction.features.ignored.empty": "Nenhuma variável foi ignorada nesta análise.",
+    "prediction.features.warnings.title": "Avisos",
+    "prediction.features.warnings.description":
+      "Avisos educacionais ou relacionados ao modelo retornados pelo serviço de predição.",
+    "prediction.features.warnings.empty": "Nenhum aviso foi retornado nesta análise.",
+    "prediction.educationalWarning.title": "Aviso educacional",
+    "disclaimer.title": "Uso educacional - não é diagnóstico médico.",
+    "disclaimer.description":
+      "O BreastCare AI fornece saídas do modelo para fins educacionais. Consulte sempre profissionais de saúde qualificados para avaliação médica.",
     "history.title": "Histórico de análises",
     "history.subtitle":
       "Revise análises educacionais anteriores em uma linha do tempo simples.",
@@ -387,6 +511,130 @@ export const translations: Record<UiLocale, Record<string, string>> = {
     "result.wdbcNo": "Not compatible",
     "result.wdbcMissing":
       "This report can be explained educationally, but it does not contain the 30 numerical features required by the WDBC model.",
+    "legacyAnalysis.new.badge": "Guided analysis",
+    "legacyAnalysis.new.title": "Create a new educational analysis",
+    "legacyAnalysis.new.subtitle":
+      "Start from a guided sample, review the 30 model features and optionally adjust numeric values before running the model output.",
+    "legacyAnalysis.new.alertTitle": "Guided and advanced in one flow",
+    "legacyAnalysis.new.alertDescription":
+      "Guided cards keep the first interaction simple, while the advanced editor keeps the project technically transparent for ML and full stack evaluation.",
+    "legacyAnalysis.new.flowLabel": "Analysis flow",
+    "legacyAnalysis.new.flowTitle": "Sample -> Features -> Model output",
+    "legacyAnalysis.new.flowDescription":
+      "Choose a base sample, customize the feature payload if needed and send it to the Spring Boot API. The result is persisted and opened in the detail page.",
+    "legacyAnalysis.new.safetyTitle": "Educational safety",
+    "legacyAnalysis.new.safetyDescription":
+      "This flow demonstrates ML integration and explainability. It does not provide medical diagnosis and should not be used for healthcare decisions.",
+    "legacyAnalysis.new.path": "Home -> New analysis -> Result detail",
+    "legacyAnalysis.detail.badge": "Analysis detail",
+    "legacyAnalysis.detail.title": "Educational model result",
+    "legacyAnalysis.detail.subtitle":
+      "Review the model output, probability distribution, threshold and educational interpretation for this analysis.",
+    "scenario.steps.sample.title": "Sample",
+    "scenario.steps.sample.description": "Choose a base scenario",
+    "scenario.steps.review.title": "Review",
+    "scenario.steps.review.description": "Check key values",
+    "scenario.steps.features.title": "Features",
+    "scenario.steps.features.description": "Edit advanced inputs",
+    "scenario.steps.run.title": "Run",
+    "scenario.steps.run.description": "Create model output",
+    "scenario.samples.benign.title": "Benign pattern sample",
+    "scenario.samples.benign.description":
+      "Lower measurements with a pattern compatible with benign examples from the educational dataset.",
+    "scenario.samples.benign.badge": "Low educational pattern",
+    "scenario.samples.intermediate.title": "Intermediate sample",
+    "scenario.samples.intermediate.description":
+      "Mixed values that help demonstrate how the model behaves close to the decision threshold.",
+    "scenario.samples.intermediate.badge": "Mixed pattern",
+    "scenario.samples.malignant.title": "Malignant pattern sample",
+    "scenario.samples.malignant.description":
+      "Higher measurements with a pattern compatible with malignant examples from the educational dataset.",
+    "scenario.samples.malignant.badge": "High educational pattern",
+    "scenario.previewProbability": "Model probability preview",
+    "scenario.review.title": "Review selected sample",
+    "scenario.review.description":
+      "This step summarizes the selected sample and the most relevant values before opening the complete advanced editor.",
+    "scenario.editor.title": "Advanced feature editor",
+    "scenario.editor.description":
+      "Edit the 30 numeric features used by the model. Values are grouped using the WDBC structure: mean, standard error and worst measurements.",
+    "scenario.editor.validFields": "valid fields",
+    "scenario.editor.reset": "Reset sample",
+    "scenario.editor.invalidNumber": "Enter a valid number.",
+    "scenario.editor.payloadNote":
+      "These values are sent as a structured feature payload to the Spring Boot API. The backend calls the ML service, persists the result and returns the analysis identifier.",
+    "scenario.featureGroups.mean.title": "Mean features",
+    "scenario.featureGroups.mean.description":
+      "Average values extracted from the cell nuclei measurements.",
+    "scenario.featureGroups.se.title": "Standard error features",
+    "scenario.featureGroups.se.description":
+      "Variation measurements related to each nucleus characteristic.",
+    "scenario.featureGroups.worst.title": "Worst features",
+    "scenario.featureGroups.worst.description":
+      "Largest values observed for each characteristic.",
+    "scenario.run.badge": "Ready to run",
+    "scenario.run.title": "Create model output from",
+    "scenario.run.description":
+      "The analysis will be sent to the Spring Boot API, processed by the ML service and persisted in the database. After creation, you will be redirected to the detail page.",
+    "scenario.run.validFeatures": "Valid features",
+    "scenario.run.running": "Running analysis...",
+    "scenario.run.cta": "Run analysis",
+    "scenario.nav.back": "Back",
+    "scenario.nav.continue": "Continue",
+    "scenario.error.reviewFields": "Please review the following numeric fields:",
+    "scenario.error.run": "Unable to run the selected analysis.",
+    "prediction.loading": "Loading model output detail...",
+    "prediction.error.title": "Unable to load analysis",
+    "prediction.error.loadDetail": "Unable to load model output detail.",
+    "prediction.hero.compatibleWith": "Compatible with",
+    "prediction.pattern.benign": "benign pattern from the educational dataset",
+    "prediction.pattern.malignant": "malignant pattern from the educational dataset",
+    "prediction.pattern.dataset": "dataset pattern",
+    "prediction.probability.malignant": "Malignant-pattern probability",
+    "prediction.probability.benignShort": "Benign",
+    "prediction.probability.benign": "Benign-pattern probability",
+    "prediction.probability.benignDescription":
+      "Estimated probability for the benign pattern according to the model output.",
+    "prediction.threshold.short": "Threshold",
+    "prediction.threshold.title": "Decision threshold",
+    "prediction.threshold.description":
+      "Configured threshold used to select the pattern label in the model output.",
+    "prediction.threshold.interpretation": "Threshold interpretation",
+    "prediction.threshold.decision": "Decision threshold",
+    "prediction.risk.low":
+      "The model output is below the malignant threshold and is more compatible with a benign pattern from the educational dataset.",
+    "prediction.risk.medium":
+      "The model output is close to the decision region and should be interpreted with educational caution.",
+    "prediction.risk.high":
+      "The model output is above the malignant threshold and is more compatible with a malignant pattern from the educational dataset.",
+    "prediction.riskBand.low": "Low educational pattern",
+    "prediction.riskBand.medium": "Intermediate educational pattern",
+    "prediction.riskBand.high": "High educational pattern",
+    "prediction.createdAt": "Created at",
+    "prediction.modelInfo.title": "Model information",
+    "prediction.modelInfo.type": "Model type",
+    "prediction.modelInfo.label": "Model label",
+    "prediction.confidence.title": "Confidence note",
+    "prediction.inputQuality.title": "Input quality",
+    "prediction.features.used.title": "Used features",
+    "prediction.features.used.description":
+      "Features accepted and used by the model for this output.",
+    "prediction.features.used.empty": "No used features were returned by the API.",
+    "prediction.features.imputed.title": "Imputed features",
+    "prediction.features.imputed.description":
+      "Features that needed fallback or imputation before the model output.",
+    "prediction.features.imputed.empty": "No features were imputed for this analysis.",
+    "prediction.features.ignored.title": "Ignored features",
+    "prediction.features.ignored.description":
+      "Features that were not used by the model or were ignored during preprocessing.",
+    "prediction.features.ignored.empty": "No features were ignored for this analysis.",
+    "prediction.features.warnings.title": "Warnings",
+    "prediction.features.warnings.description":
+      "Educational or model-related warnings returned by the prediction service.",
+    "prediction.features.warnings.empty": "No warnings were returned for this analysis.",
+    "prediction.educationalWarning.title": "Educational warning",
+    "disclaimer.title": "Educational only - not a medical diagnosis.",
+    "disclaimer.description":
+      "BreastCare AI provides model outputs for educational purposes only. Always consult qualified healthcare professionals for medical evaluation.",
     "history.title": "Analysis history",
     "history.subtitle": "Review previous educational analyses in a simple timeline.",
     "history.timelineTitle": "Educational timeline",
@@ -586,6 +834,130 @@ export const translations: Record<UiLocale, Record<string, string>> = {
     "result.wdbcNo": "No compatible",
     "result.wdbcMissing":
       "Este informe puede explicarse educativamente, pero no contiene las 30 variables numéricas requeridas por el modelo WDBC.",
+    "legacyAnalysis.new.badge": "Análisis guiado",
+    "legacyAnalysis.new.title": "Crear nuevo análisis educativo",
+    "legacyAnalysis.new.subtitle":
+      "Empieza con una muestra guiada, revisa las 30 variables del modelo y ajusta valores numéricos opcionalmente antes de ejecutar la salida del modelo.",
+    "legacyAnalysis.new.alertTitle": "Flujo guiado y avanzado",
+    "legacyAnalysis.new.alertDescription":
+      "Las tarjetas guiadas simplifican la primera interacción, mientras el editor avanzado mantiene transparencia técnica para evaluación de ML y full stack.",
+    "legacyAnalysis.new.flowLabel": "Flujo del análisis",
+    "legacyAnalysis.new.flowTitle": "Muestra -> Variables -> Salida del modelo",
+    "legacyAnalysis.new.flowDescription":
+      "Elige una muestra base, personaliza el payload de variables si es necesario y envíalo a la API Spring Boot. El resultado se guarda y se abre en la página de detalle.",
+    "legacyAnalysis.new.safetyTitle": "Seguridad educativa",
+    "legacyAnalysis.new.safetyDescription":
+      "Este flujo demuestra integración de ML y explicabilidad. No proporciona diagnóstico médico y no debe usarse para decisiones de salud.",
+    "legacyAnalysis.new.path": "Inicio -> Nuevo análisis -> Detalle del resultado",
+    "legacyAnalysis.detail.badge": "Detalle del análisis",
+    "legacyAnalysis.detail.title": "Resultado educativo del modelo",
+    "legacyAnalysis.detail.subtitle":
+      "Revisa la salida del modelo, distribución de probabilidades, umbral e interpretación educativa de este análisis.",
+    "scenario.steps.sample.title": "Muestra",
+    "scenario.steps.sample.description": "Elige un escenario base",
+    "scenario.steps.review.title": "Revisión",
+    "scenario.steps.review.description": "Comprueba valores clave",
+    "scenario.steps.features.title": "Variables",
+    "scenario.steps.features.description": "Edita entradas avanzadas",
+    "scenario.steps.run.title": "Ejecutar",
+    "scenario.steps.run.description": "Crear salida del modelo",
+    "scenario.samples.benign.title": "Muestra de patrón benigno",
+    "scenario.samples.benign.description":
+      "Medidas menores con un patrón compatible con ejemplos benignos del conjunto educativo.",
+    "scenario.samples.benign.badge": "Patrón educativo bajo",
+    "scenario.samples.intermediate.title": "Muestra intermedia",
+    "scenario.samples.intermediate.description":
+      "Valores mixtos que ayudan a demostrar cómo se comporta el modelo cerca del umbral de decisión.",
+    "scenario.samples.intermediate.badge": "Patrón mixto",
+    "scenario.samples.malignant.title": "Muestra de patrón maligno",
+    "scenario.samples.malignant.description":
+      "Medidas mayores con un patrón compatible con ejemplos malignos del conjunto educativo.",
+    "scenario.samples.malignant.badge": "Patrón educativo alto",
+    "scenario.previewProbability": "Vista previa de probabilidad del modelo",
+    "scenario.review.title": "Revisar muestra seleccionada",
+    "scenario.review.description":
+      "Este paso resume la muestra seleccionada y los valores más relevantes antes de abrir el editor avanzado completo.",
+    "scenario.editor.title": "Editor avanzado de variables",
+    "scenario.editor.description":
+      "Edita las 30 variables numéricas usadas por el modelo. Los valores se agrupan con la estructura WDBC: media, error estándar y peores medidas.",
+    "scenario.editor.validFields": "campos válidos",
+    "scenario.editor.reset": "Restaurar muestra",
+    "scenario.editor.invalidNumber": "Ingresa un número válido.",
+    "scenario.editor.payloadNote":
+      "Estos valores se envían como payload estructurado de variables a la API Spring Boot. El backend llama al servicio de ML, guarda el resultado y devuelve el identificador del análisis.",
+    "scenario.featureGroups.mean.title": "Variables medias",
+    "scenario.featureGroups.mean.description":
+      "Valores medios extraídos de las mediciones de los núcleos celulares.",
+    "scenario.featureGroups.se.title": "Variables de error estándar",
+    "scenario.featureGroups.se.description":
+      "Medidas de variación relacionadas con cada característica del núcleo.",
+    "scenario.featureGroups.worst.title": "Peores variables",
+    "scenario.featureGroups.worst.description":
+      "Mayores valores observados para cada característica.",
+    "scenario.run.badge": "Listo para ejecutar",
+    "scenario.run.title": "Crear salida del modelo desde",
+    "scenario.run.description":
+      "El análisis se enviará a la API Spring Boot, será procesado por el servicio de ML y guardado en la base de datos. Después, serás redirigido a la página de detalle.",
+    "scenario.run.validFeatures": "Variables válidas",
+    "scenario.run.running": "Ejecutando análisis...",
+    "scenario.run.cta": "Ejecutar análisis",
+    "scenario.nav.back": "Volver",
+    "scenario.nav.continue": "Continuar",
+    "scenario.error.reviewFields": "Revisa los siguientes campos numéricos:",
+    "scenario.error.run": "No fue posible ejecutar el análisis seleccionado.",
+    "prediction.loading": "Cargando detalle de la salida del modelo...",
+    "prediction.error.title": "No fue posible cargar el análisis",
+    "prediction.error.loadDetail": "No fue posible cargar el detalle de la salida del modelo.",
+    "prediction.hero.compatibleWith": "Compatible con",
+    "prediction.pattern.benign": "patrón benigno del conjunto educativo",
+    "prediction.pattern.malignant": "patrón maligno del conjunto educativo",
+    "prediction.pattern.dataset": "patrón del conjunto educativo",
+    "prediction.probability.malignant": "Probabilidad del patrón maligno",
+    "prediction.probability.benignShort": "Benigno",
+    "prediction.probability.benign": "Probabilidad del patrón benigno",
+    "prediction.probability.benignDescription":
+      "Probabilidad estimada para el patrón benigno según la salida del modelo.",
+    "prediction.threshold.short": "Umbral",
+    "prediction.threshold.title": "Umbral de decisión",
+    "prediction.threshold.description":
+      "Umbral configurado para seleccionar la etiqueta de patrón en la salida del modelo.",
+    "prediction.threshold.interpretation": "Interpretación del umbral",
+    "prediction.threshold.decision": "Umbral de decisión",
+    "prediction.risk.low":
+      "La salida del modelo está por debajo del umbral maligno y es más compatible con un patrón benigno del conjunto educativo.",
+    "prediction.risk.medium":
+      "La salida del modelo está cerca de la región de decisión y debe interpretarse con cautela educativa.",
+    "prediction.risk.high":
+      "La salida del modelo está por encima del umbral maligno y es más compatible con un patrón maligno del conjunto educativo.",
+    "prediction.riskBand.low": "Patrón educativo bajo",
+    "prediction.riskBand.medium": "Patrón educativo intermedio",
+    "prediction.riskBand.high": "Patrón educativo alto",
+    "prediction.createdAt": "Creado el",
+    "prediction.modelInfo.title": "Información del modelo",
+    "prediction.modelInfo.type": "Tipo de modelo",
+    "prediction.modelInfo.label": "Etiqueta del modelo",
+    "prediction.confidence.title": "Nota de confianza",
+    "prediction.inputQuality.title": "Calidad de entrada",
+    "prediction.features.used.title": "Variables usadas",
+    "prediction.features.used.description":
+      "Variables aceptadas y usadas por el modelo en esta salida.",
+    "prediction.features.used.empty": "La API no devolvió variables usadas.",
+    "prediction.features.imputed.title": "Variables imputadas",
+    "prediction.features.imputed.description":
+      "Variables que necesitaron fallback o imputación antes de la salida del modelo.",
+    "prediction.features.imputed.empty": "No se imputaron variables en este análisis.",
+    "prediction.features.ignored.title": "Variables ignoradas",
+    "prediction.features.ignored.description":
+      "Variables que no fueron usadas por el modelo o fueron ignoradas durante el preprocesamiento.",
+    "prediction.features.ignored.empty": "No se ignoraron variables en este análisis.",
+    "prediction.features.warnings.title": "Avisos",
+    "prediction.features.warnings.description":
+      "Avisos educativos o relacionados con el modelo devueltos por el servicio de predicción.",
+    "prediction.features.warnings.empty": "No se devolvieron avisos en este análisis.",
+    "prediction.educationalWarning.title": "Aviso educativo",
+    "disclaimer.title": "Uso educativo - no es diagnóstico médico.",
+    "disclaimer.description":
+      "BreastCare AI proporciona salidas del modelo solo con fines educativos. Consulta siempre profesionales de salud calificados para evaluación médica.",
     "history.title": "Historial de análisis",
     "history.subtitle": "Revisa análisis educativos anteriores en una línea de tiempo simple.",
     "history.timelineTitle": "Línea de tiempo educativa",
