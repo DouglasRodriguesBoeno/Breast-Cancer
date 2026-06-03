@@ -32,6 +32,60 @@ export const translations: Record<UiLocale, Record<string, string>> = {
     "common.educational": "Educacional",
     "common.recommended": "Recomendado",
     "common.learnMore": "Saiba mais",
+    "model.badge": "Visão do modelo",
+    "model.title": "Modelo educacional de IA para padrões WDBC",
+    "model.subtitle":
+      "O BreastCare AI usa um modelo de aprendizado de máquina treinado com variáveis estruturadas do conjunto WDBC. A saída é educacional, probabilística e avançada.",
+    "model.cta.run": "Executar análise",
+    "model.cta.history": "Ver histórico",
+    "model.current.title": "Modelo atual",
+    "model.current.description":
+      "Modelo ensemble que combina comportamento de regressão logística e random forest para saída educacional.",
+    "model.current.active": "Ativo",
+    "model.current.type": "Tipo de modelo",
+    "model.current.threshold": "Limiar",
+    "model.current.inputFeatures": "Variáveis de entrada",
+    "model.metrics.accuracy.label": "Acurácia de teste",
+    "model.metrics.accuracy.description":
+      "Desempenho geral na divisão de teste.",
+    "model.metrics.roc.label": "ROC-AUC",
+    "model.metrics.roc.description":
+      "Capacidade do modelo de separar padrões benignos e malignos no conjunto educacional.",
+    "model.metrics.recall.label": "Recall do padrão maligno",
+    "model.metrics.recall.description":
+      "Sensibilidade para exemplos de padrão maligno no conjunto de teste.",
+    "model.dataset.title": "Conjunto de dados e finalidade",
+    "model.dataset.p1":
+      "O modelo é baseado no conjunto Wisconsin Breast Cancer (WDBC), usando medidas numéricas extraídas de amostras digitalizadas de punção aspirativa por agulha fina.",
+    "model.goal.title": "Objetivo educacional",
+    "model.goal.description":
+      "Demonstrar como uma aplicação full stack pode integrar saídas de aprendizado de máquina, persistir resultados e apresentar informações explicáveis do modelo em uma experiência segura.",
+    "model.limitation.title": "Limitação importante",
+    "model.limitation.description":
+      "A aplicação não analisa imagens de mamografia e não fornece avaliação médica.",
+    "model.features.title": "Grupos de variáveis",
+    "model.features.mean.title": "Variáveis médias",
+    "model.features.mean.description":
+      "Medidas médias extraídas das características dos núcleos celulares.",
+    "model.features.se.title": "Variáveis de erro padrão",
+    "model.features.se.description":
+      "Medidas de variação e erro padrão relacionadas a cada propriedade do núcleo.",
+    "model.features.worst.title": "Piores variáveis",
+    "model.features.worst.description":
+      "Maiores valores observados para cada característica medida.",
+    "model.interpret.title": "Como interpretar a saída",
+    "model.interpret.p1":
+      "O modelo retorna uma distribuição de probabilidade para padrões benignos e malignos. O rótulo final é selecionado usando o limiar maligno configurado.",
+    "model.interpret.p2":
+      "Uma probabilidade alta não confirma uma condição. Ela apenas indica que os valores de entrada são mais compatíveis com um padrão aprendido no conjunto de treinamento.",
+    "model.safety.title": "Declaração de segurança",
+    "model.safety.p1":
+      "BreastCare AI é um projeto educacional e de portfólio. Ele não é um dispositivo médico, não substitui avaliação profissional e não deve ser usado para decisões de saúde.",
+    "model.safety.p2":
+      "Qualquer preocupação real sobre rastreamento, sintomas ou exames de mama deve ser discutida com profissionais de saúde qualificados.",
+    "model.disclaimer.title": "Uso educacional e explicável",
+    "model.disclaimer.description":
+      "As saídas WDBC são demonstrações educacionais baseadas em dados estruturados compatíveis. Elas não substituem avaliação profissional.",
     "home.eyebrow": "Educacional • Seguro • Explicável",
     "home.title":
       "Transforme laudos de mama em explicações claras, multilíngues e educacionais com IA.",
@@ -356,6 +410,59 @@ export const translations: Record<UiLocale, Record<string, string>> = {
     "common.educational": "Educational",
     "common.recommended": "Recommended",
     "common.learnMore": "Learn more",
+    "model.badge": "Model overview",
+    "model.title": "Educational AI model for WDBC pattern analysis",
+    "model.subtitle":
+      "BreastCare AI uses a machine learning model trained on structured variables from the WDBC dataset. The output is educational, probabilistic and advanced.",
+    "model.cta.run": "Run analysis",
+    "model.cta.history": "View history",
+    "model.current.title": "Current model",
+    "model.current.description":
+      "Ensemble model combining logistic regression and random forest behavior for educational output.",
+    "model.current.active": "Active",
+    "model.current.type": "Model type",
+    "model.current.threshold": "Threshold",
+    "model.current.inputFeatures": "Input features",
+    "model.metrics.accuracy.label": "Test accuracy",
+    "model.metrics.accuracy.description": "Overall performance on the test split.",
+    "model.metrics.roc.label": "ROC-AUC",
+    "model.metrics.roc.description":
+      "Model capacity to separate benign and malignant patterns in the educational dataset.",
+    "model.metrics.recall.label": "Malignant-pattern recall",
+    "model.metrics.recall.description":
+      "Sensitivity for malignant-pattern examples in the test set.",
+    "model.dataset.title": "Dataset and purpose",
+    "model.dataset.p1":
+      "The model is based on the Wisconsin Breast Cancer (WDBC) dataset, using numerical measurements extracted from digitized fine needle aspirate samples.",
+    "model.goal.title": "Educational goal",
+    "model.goal.description":
+      "Demonstrate how a full stack application can integrate machine learning outputs, persist results and present explainable model information in a safe user experience.",
+    "model.limitation.title": "Important limitation",
+    "model.limitation.description":
+      "The application does not analyze mammography images and does not provide medical evaluation.",
+    "model.features.title": "Feature groups",
+    "model.features.mean.title": "Mean features",
+    "model.features.mean.description":
+      "Average measurements extracted from the cell nuclei characteristics.",
+    "model.features.se.title": "Standard error features",
+    "model.features.se.description":
+      "Variation and standard error measurements related to each nucleus property.",
+    "model.features.worst.title": "Worst features",
+    "model.features.worst.description":
+      "Largest observed values for each measured characteristic.",
+    "model.interpret.title": "How to interpret the output",
+    "model.interpret.p1":
+      "The model returns a probability distribution for benign and malignant patterns. The final label is selected using the configured malignant threshold.",
+    "model.interpret.p2":
+      "A high probability does not confirm a condition. It only means the input values are more compatible with a learned pattern from the training dataset.",
+    "model.safety.title": "Safety statement",
+    "model.safety.p1":
+      "BreastCare AI is a portfolio and educational project. It is not a medical device, does not replace professional evaluation and must not be used to make healthcare decisions.",
+    "model.safety.p2":
+      "Any real concern about breast screening, symptoms or exams should be discussed with qualified healthcare professionals.",
+    "model.disclaimer.title": "Educational and explainable use",
+    "model.disclaimer.description":
+      "WDBC outputs are educational demonstrations based on compatible structured data. They do not replace professional evaluation.",
     "home.eyebrow": "Educational • Secure • Explainable",
     "home.title":
       "Transform breast reports into clear, multilingual and educational AI explanations.",
@@ -679,6 +786,60 @@ export const translations: Record<UiLocale, Record<string, string>> = {
     "common.educational": "Educativo",
     "common.recommended": "Recomendado",
     "common.learnMore": "Más información",
+    "model.badge": "Vista del modelo",
+    "model.title": "Modelo educativo de IA para patrones WDBC",
+    "model.subtitle":
+      "BreastCare AI usa un modelo de aprendizaje automático entrenado con variables estructuradas del conjunto WDBC. La salida es educativa, probabilística y avanzada.",
+    "model.cta.run": "Ejecutar análisis",
+    "model.cta.history": "Ver historial",
+    "model.current.title": "Modelo actual",
+    "model.current.description":
+      "Modelo ensemble que combina comportamiento de regresión logística y random forest para salida educativa.",
+    "model.current.active": "Activo",
+    "model.current.type": "Tipo de modelo",
+    "model.current.threshold": "Umbral",
+    "model.current.inputFeatures": "Variables de entrada",
+    "model.metrics.accuracy.label": "Exactitud de prueba",
+    "model.metrics.accuracy.description":
+      "Desempeño general en la división de prueba.",
+    "model.metrics.roc.label": "ROC-AUC",
+    "model.metrics.roc.description":
+      "Capacidad del modelo para separar patrones benignos y malignos en el conjunto educativo.",
+    "model.metrics.recall.label": "Recall del patrón maligno",
+    "model.metrics.recall.description":
+      "Sensibilidad para ejemplos de patrón maligno en el conjunto de prueba.",
+    "model.dataset.title": "Conjunto de datos y finalidad",
+    "model.dataset.p1":
+      "El modelo se basa en el conjunto Wisconsin Breast Cancer (WDBC), usando mediciones numéricas extraídas de muestras digitalizadas de aspiración con aguja fina.",
+    "model.goal.title": "Objetivo educativo",
+    "model.goal.description":
+      "Demostrar cómo una aplicación full stack puede integrar salidas de aprendizaje automático, persistir resultados y presentar información explicable del modelo en una experiencia segura.",
+    "model.limitation.title": "Limitación importante",
+    "model.limitation.description":
+      "La aplicación no analiza imágenes de mamografía y no proporciona evaluación médica.",
+    "model.features.title": "Grupos de variables",
+    "model.features.mean.title": "Variables medias",
+    "model.features.mean.description":
+      "Mediciones medias extraídas de las características de los núcleos celulares.",
+    "model.features.se.title": "Variables de error estándar",
+    "model.features.se.description":
+      "Mediciones de variación y error estándar relacionadas con cada propiedad del núcleo.",
+    "model.features.worst.title": "Peores variables",
+    "model.features.worst.description":
+      "Mayores valores observados para cada característica medida.",
+    "model.interpret.title": "Cómo interpretar la salida",
+    "model.interpret.p1":
+      "El modelo devuelve una distribución de probabilidad para patrones benignos y malignos. La etiqueta final se selecciona usando el umbral maligno configurado.",
+    "model.interpret.p2":
+      "Una probabilidad alta no confirma una condición. Solo significa que los valores de entrada son más compatibles con un patrón aprendido del conjunto de entrenamiento.",
+    "model.safety.title": "Declaración de seguridad",
+    "model.safety.p1":
+      "BreastCare AI es un proyecto educativo y de portafolio. No es un dispositivo médico, no reemplaza la evaluación profesional y no debe usarse para decisiones de salud.",
+    "model.safety.p2":
+      "Cualquier preocupación real sobre rastreo mamario, síntomas o exámenes debe discutirse con profesionales de salud calificados.",
+    "model.disclaimer.title": "Uso educativo y explicable",
+    "model.disclaimer.description":
+      "Las salidas WDBC son demostraciones educativas basadas en datos estructurados compatibles. No reemplazan la evaluación profesional.",
     "home.eyebrow": "Educativo • Seguro • Explicable",
     "home.title":
       "Transforma informes mamarios en explicaciones claras, multilingües y educativas con IA.",

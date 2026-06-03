@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   Activity,
@@ -12,7 +14,6 @@ import {
 } from "lucide-react";
 
 import { PageShell } from "@/components/layout/page-shell";
-import { EducationalDisclaimer } from "@/components/shared/educational-disclaimer";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import {
@@ -22,27 +23,28 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { useTranslations } from "@/i18n/use-translations";
 import { cn } from "@/lib/utils";
 
 const metricCards = [
   {
-    label: "Test accuracy",
+    labelKey: "model.metrics.accuracy.label",
     value: "99.12%",
-    description: "Overall performance on the test split.",
+    descriptionKey: "model.metrics.accuracy.description",
     icon: Gauge,
     progress: 99.12,
   },
   {
-    label: "ROC-AUC",
+    labelKey: "model.metrics.roc.label",
     value: "99.77%",
-    description: "Model capacity to separate benign and malignant patterns.",
+    descriptionKey: "model.metrics.roc.description",
     icon: LineChart,
     progress: 99.77,
   },
   {
-    label: "Malignant recall",
+    labelKey: "model.metrics.recall.label",
     value: "97.62%",
-    description: "Sensitivity for malignant cases in the test set.",
+    descriptionKey: "model.metrics.recall.description",
     icon: Activity,
     progress: 97.62,
   },
@@ -50,9 +52,9 @@ const metricCards = [
 
 const featureGroups = [
   {
-    title: "Mean features",
-    description:
-      "Average measurements extracted from the cell nuclei characteristics.",
+    id: "mean",
+    titleKey: "model.features.mean.title",
+    descriptionKey: "model.features.mean.description",
     features: [
       "radius_mean",
       "texture_mean",
@@ -67,9 +69,9 @@ const featureGroups = [
     ],
   },
   {
-    title: "Standard error features",
-    description:
-      "Variation and standard error measurements related to each nucleus property.",
+    id: "se",
+    titleKey: "model.features.se.title",
+    descriptionKey: "model.features.se.description",
     features: [
       "radius_se",
       "texture_se",
@@ -84,9 +86,9 @@ const featureGroups = [
     ],
   },
   {
-    title: "Worst features",
-    description:
-      "Largest or most severe observed values for each measured characteristic.",
+    id: "worst",
+    titleKey: "model.features.worst.title",
+    descriptionKey: "model.features.worst.description",
     features: [
       "radius_worst",
       "texture_worst",
@@ -103,24 +105,23 @@ const featureGroups = [
 ];
 
 export default function ModelPage() {
+  const { t } = useTranslations();
+
   return (
     <PageShell>
       <section className="mx-auto w-full max-w-7xl px-2 py-12 lg:py-16">
         <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
           <div>
             <Badge className="rounded-2xl bg-primary-rose-soft px-4 py-2 text-primary-rose hover:bg-primary-rose-soft">
-              Model overview
+              {t("model.badge")}
             </Badge>
 
             <h1 className="mt-6 max-w-4xl text-4xl font-semibold tracking-tight text-foreground md:text-6xl">
-              Educational AI model for breast cancer pattern analysis
+              {t("model.title")}
             </h1>
 
             <p className="mt-5 max-w-3xl text-lg leading-8 text-muted-foreground">
-              BreastCare AI uses a machine learning model trained on structured
-              clinical features from the Wisconsin Diagnostic Breast Cancer
-              dataset. The result is educational and probabilistic, not a
-              medical diagnosis.
+              {t("model.subtitle")}
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -132,7 +133,7 @@ export default function ModelPage() {
                 )}
               >
                 <Sparkles className="mr-2 size-5" />
-                Run analysis
+                {t("model.cta.run")}
               </Link>
 
               <Link
@@ -142,7 +143,7 @@ export default function ModelPage() {
                   "h-14 rounded-2xl border-border bg-white px-8 text-base font-semibold"
                 )}
               >
-                View history
+                {t("model.cta.history")}
               </Link>
             </div>
           </div>
@@ -153,17 +154,16 @@ export default function ModelPage() {
                 <div>
                   <CardTitle className="flex items-center gap-3 text-2xl">
                     <Brain className="size-6 text-primary-rose" />
-                    Current model
+                    {t("model.current.title")}
                   </CardTitle>
 
                   <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                    Ensemble model combining logistic regression and random
-                    forest behavior for educational prediction.
+                    {t("model.current.description")}
                   </p>
                 </div>
 
                 <Badge className="rounded-xl bg-secondary-teal-soft px-3 py-1 text-secondary-teal-dark hover:bg-secondary-teal-soft">
-                  Active
+                  {t("model.current.active")}
                 </Badge>
               </div>
             </CardHeader>
@@ -171,7 +171,7 @@ export default function ModelPage() {
             <CardContent className="space-y-4 px-6 pb-6">
               <div className="rounded-3xl bg-muted p-5">
                 <p className="text-sm font-medium text-muted-foreground">
-                  Model type
+                  {t("model.current.type")}
                 </p>
                 <p className="mt-2 break-words text-lg font-semibold text-foreground">
                   ensemble_mean_logistic_random_forest
@@ -181,7 +181,7 @@ export default function ModelPage() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="rounded-3xl bg-primary-rose-soft/60 p-5">
                   <p className="text-sm font-medium text-primary-rose">
-                    Threshold
+                    {t("model.current.threshold")}
                   </p>
                   <p className="mt-2 text-2xl font-semibold text-primary-rose">
                     34.33%
@@ -190,7 +190,7 @@ export default function ModelPage() {
 
                 <div className="rounded-3xl bg-secondary-teal-soft/70 p-5">
                   <p className="text-sm font-medium text-secondary-teal-dark">
-                    Input features
+                    {t("model.current.inputFeatures")}
                   </p>
                   <p className="mt-2 text-2xl font-semibold text-secondary-teal-dark">
                     30
@@ -208,14 +208,14 @@ export default function ModelPage() {
 
           return (
             <Card
-              key={metric.label}
+              key={metric.labelKey}
               className="rounded-3xl border-border bg-card/95 p-2 shadow-sm"
             >
               <CardContent className="p-5">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="text-sm font-medium text-muted-foreground">
-                      {metric.label}
+                      {t(metric.labelKey)}
                     </p>
 
                     <p className="mt-3 text-4xl font-semibold tracking-tight text-foreground">
@@ -234,7 +234,7 @@ export default function ModelPage() {
                 />
 
                 <p className="mt-4 text-sm leading-6 text-muted-foreground">
-                  {metric.description}
+                  {t(metric.descriptionKey)}
                 </p>
               </CardContent>
             </Card>
@@ -247,33 +247,30 @@ export default function ModelPage() {
           <CardHeader className="px-6 pt-6">
             <CardTitle className="flex items-center gap-3 text-2xl">
               <Database className="size-6 text-primary-rose" />
-              Dataset and purpose
+              {t("model.dataset.title")}
             </CardTitle>
           </CardHeader>
 
           <CardContent className="space-y-5 px-6 pb-6 text-sm leading-6 text-muted-foreground">
             <p>
-              The model is based on the Wisconsin Diagnostic Breast Cancer
-              dataset, using numerical measurements extracted from digitized
-              images of fine needle aspirate samples.
+              {t("model.dataset.p1")}
             </p>
 
             <div className="rounded-3xl bg-muted p-5">
-              <p className="font-medium text-foreground">Educational goal</p>
+              <p className="font-medium text-foreground">
+                {t("model.goal.title")}
+              </p>
               <p className="mt-2">
-                Demonstrate how a full stack application can integrate machine
-                learning predictions, persist results and present explainable
-                model information in a safe user experience.
+                {t("model.goal.description")}
               </p>
             </div>
 
             <div className="rounded-3xl bg-primary-rose-soft/40 p-5">
               <p className="font-medium text-primary-rose">
-                Important limitation
+                {t("model.limitation.title")}
               </p>
               <p className="mt-2">
-                The application does not analyze mammography images and does not
-                provide clinical diagnosis.
+                {t("model.limitation.description")}
               </p>
             </div>
           </CardContent>
@@ -283,19 +280,19 @@ export default function ModelPage() {
           <CardHeader className="px-6 pt-6">
             <CardTitle className="flex items-center gap-3 text-2xl">
               <BarChart3 className="size-6 text-primary-rose" />
-              Feature groups
+              {t("model.features.title")}
             </CardTitle>
           </CardHeader>
 
           <CardContent className="space-y-5 px-6 pb-6">
             {featureGroups.map((group) => (
-              <div key={group.title} className="rounded-3xl bg-muted p-5">
+              <div key={group.id} className="rounded-3xl bg-muted p-5">
                 <h3 className="font-semibold text-foreground">
-                  {group.title}
+                  {t(group.titleKey)}
                 </h3>
 
                 <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  {group.description}
+                  {t(group.descriptionKey)}
                 </p>
 
                 <div className="mt-4 flex flex-wrap gap-2">
@@ -319,21 +316,17 @@ export default function ModelPage() {
           <CardHeader className="px-6 pt-6">
             <CardTitle className="flex items-center gap-3 text-2xl">
               <FileText className="size-6 text-primary-rose" />
-              How to interpret the output
+              {t("model.interpret.title")}
             </CardTitle>
           </CardHeader>
 
           <CardContent className="space-y-4 px-6 pb-6 text-sm leading-6 text-muted-foreground">
             <p>
-              The model returns a probability distribution for benign and
-              malignant patterns. The final label is selected using the
-              configured malignant threshold.
+              {t("model.interpret.p1")}
             </p>
 
             <p>
-              A high probability does not confirm a diagnosis. It only means the
-              input values are more compatible with a learned pattern from the
-              training dataset.
+              {t("model.interpret.p2")}
             </p>
           </CardContent>
         </Card>
@@ -342,27 +335,40 @@ export default function ModelPage() {
           <CardHeader className="px-6 pt-6">
             <CardTitle className="flex items-center gap-3 text-2xl">
               <ShieldCheck className="size-6 text-primary-rose" />
-              Safety statement
+              {t("model.safety.title")}
             </CardTitle>
           </CardHeader>
 
           <CardContent className="space-y-4 px-6 pb-6 text-sm leading-6 text-muted-foreground">
             <p>
-              BreastCare AI is a portfolio and educational project. It is not a
-              medical device, does not replace clinical evaluation and must not
-              be used to make healthcare decisions.
+              {t("model.safety.p1")}
             </p>
 
             <p>
-              Any real concern about breast cancer screening, symptoms or exams
-              should be discussed with qualified healthcare professionals.
+              {t("model.safety.p2")}
             </p>
           </CardContent>
         </Card>
       </section>
 
       <section className="mx-auto w-full max-w-7xl px-2 pb-12">
-        <EducationalDisclaimer />
+        <div className="rounded-3xl border border-primary-rose-soft bg-white/75 p-6 shadow-sm">
+          <div className="flex gap-4">
+            <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary-rose-soft text-primary-rose">
+              <ShieldCheck className="size-5" />
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-foreground">
+                {t("model.disclaimer.title")}
+              </h3>
+
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
+                {t("model.disclaimer.description")}
+              </p>
+            </div>
+          </div>
+        </div>
       </section>
     </PageShell>
   );
