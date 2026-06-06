@@ -253,7 +253,7 @@ export function ReportResultView({ id }: { id: string }) {
             </h2>
           </div>
 
-          <p className="mt-6 text-lg leading-8 text-muted-foreground">
+          <p className="mt-6 whitespace-pre-line text-lg leading-8 text-muted-foreground">
             {simpleExplanation}
           </p>
         </BentoCard>
@@ -269,7 +269,7 @@ export function ReportResultView({ id }: { id: string }) {
               {t("result.summary")}
             </h2>
           </div>
-          <p className="mt-5 text-base leading-7 text-muted-foreground">
+          <p className="mt-5 whitespace-pre-line text-base leading-7 text-muted-foreground">
             {summary}
           </p>
         </BentoCard>
