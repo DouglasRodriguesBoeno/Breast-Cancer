@@ -14,6 +14,7 @@ export function V2LanguageSwitcher() {
     <label className="flex h-10 items-center gap-2 rounded-xl border border-border bg-white px-3 text-sm font-medium text-muted-foreground">
       <Globe2 className="size-4 text-accent-blue" />
       <select
+        data-testid="language-switcher"
         value={locale}
         onChange={(event) => setLocale(event.target.value as UiLocale)}
         className="bg-transparent text-sm font-semibold text-foreground outline-none"

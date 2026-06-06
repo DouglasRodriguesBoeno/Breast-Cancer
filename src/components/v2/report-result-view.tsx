@@ -405,7 +405,10 @@ export function ReportResultView({ id }: { id: string }) {
             </div>
           </BentoCard>
 
-          <BentoCard className="rounded-[2rem] border-border bg-background/70">
+          <BentoCard
+            data-testid="wdbc-section"
+            className="rounded-[2rem] border-border bg-background/70"
+          >
             <div className="flex items-center gap-3">
               <div className="flex size-10 items-center justify-center rounded-xl bg-accent-blue-soft text-accent-blue">
                 <FileText className="size-5" />

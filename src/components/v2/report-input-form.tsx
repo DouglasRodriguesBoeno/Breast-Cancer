@@ -107,6 +107,7 @@ export function ReportInputForm() {
         </p>
 
         <textarea
+          data-testid="report-textarea"
           id="report-text"
           value={reportText}
           onChange={(event) => setReportText(event.target.value)}
@@ -183,6 +184,7 @@ export function ReportInputForm() {
 
       <label className="mt-5 flex gap-3 rounded-xl border border-border bg-background p-4 text-sm leading-6 text-muted-foreground">
         <input
+          data-testid="educational-acknowledgement"
           type="checkbox"
           checked={acknowledged}
           onChange={(event) => setAcknowledged(event.target.checked)}
@@ -208,6 +210,7 @@ export function ReportInputForm() {
       )}
 
       <button
+        data-testid="report-submit"
         type="submit"
         disabled={!canSubmit}
         className={cn(

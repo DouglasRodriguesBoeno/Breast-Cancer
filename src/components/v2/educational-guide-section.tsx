@@ -54,7 +54,10 @@ export function EducationalGuideSection({ report }: { report: ReportAnalysis }) 
   const guide = buildEducationalGuide(report, locale);
 
   return (
-    <section className="mt-5 rounded-[2rem] border border-border bg-white p-5 shadow-sm md:p-7">
+    <section
+      data-testid="educational-guide"
+      className="mt-5 rounded-[2rem] border border-border bg-white p-5 shadow-sm md:p-7"
+    >
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div>
           <div className="flex items-center gap-3">
